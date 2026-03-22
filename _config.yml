@@ -21,10 +21,16 @@
 title: 杨浩峰频道
 email: yhf213@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
+<<<<<<< HEAD
   新科技和新商业模式研究者；专注于区块链、AI、中医、音乐和电影。
 
 baseurl: "/web" # the subpath of your site, e.g. /blog
 url: "https://stevenyhf.github.io/web/" # the base hostname & protocol for your site, e.g. http://example.com
+=======
+ 新科技和新商业模式研究者；专注于区块链、AI、中医、音乐和电影。
+baseurl: "/web" # the subpath of your site, e.g. /blog
+url: "https://stevenyhf.github.io" # the base hostname & protocol for your site, e.g. http://example.com
+>>>>>>> e2f23e7efd3eae5b03cfe7ff9f18a743b6378dfc
 twitter_username: steven_yanghf
 github_username:  stevenyhf
 
