@@ -1,0 +1,282 @@
+<h1
+id="企业微信连接openclaw详细配置部署步骤">企业微信连接OpenClaw详细配置部署步骤</h1>
+<h2 id="前言">📋 前言</h2>
+<p>本指南详细说明如何通过企业微信连接使用OpenClaw，尽量不涉及代码和CLI部署，重点放在界面操作和配置步骤上。</p>
+<h2 id="准备工作">🎯 准备工作</h2>
+<h3 id="所需资源清单">1. 所需资源清单</h3>
+<ul>
+<li><strong>企业微信账号</strong>：需要有企业微信管理后台访问权限</li>
+<li><strong>云服务器</strong>：阿里云、腾讯云或百度云的轻量应用服务器（已预装OpenClaw）</li>
+<li><strong>API Key</strong>：百炼（阿里云）或其他AI模型的API Key</li>
+<li><strong>域名</strong>（可选）：用于解决企业微信域名校验问题</li>
+</ul>
+<h3 id="选择云服务商三选一">2. 选择云服务商（三选一）</h3>
+<ul>
+<li><strong>阿里云</strong>：功能最完整，文档最详细</li>
+<li><strong>腾讯云</strong>：界面友好，操作简单</li>
+<li><strong>百度云</strong>：预装插件，配置较少</li>
+</ul>
+<h2 id="方案一阿里云方案最详细">🚀 方案一：阿里云方案（最详细）</h2>
+<h3
+id="第一阶段购买和部署openclaw服务器">第一阶段：购买和部署OpenClaw服务器</h3>
+<h4 id="步骤1购买轻量应用服务器">步骤1：购买轻量应用服务器</h4>
+<ol type="1">
+<li>访问阿里云控制台：https://swasnext.console.aliyun.com/buy</li>
+<li>选择”应用镜像” → 选择”OpenClaw”镜像</li>
+<li>配置服务器：
+<ul>
+<li><strong>实例</strong>：内存必须2GiB及以上</li>
+<li><strong>地域</strong>：建议选择”华北2（北京）”</li>
+<li><strong>购买时长</strong>：根据需求选择</li>
+</ul></li>
+<li>完成购买</li>
+</ol>
+<h4 id="步骤2配置openclaw">步骤2：配置OpenClaw</h4>
+<ol type="1">
+<li>进入服务器管理页面</li>
+<li>点击”应用详情”页签</li>
+<li>执行以下操作：</li>
+</ol>
+<p><strong>a. 端口放通</strong> - 点击”端口放通”下的”执行命令” -
+系统会自动开放OpenClaw服务端口 -
+<strong>重要</strong>：端口是随机生成的，需要记下端口号</p>
+<p><strong>b. 配置API Key</strong> - 点击”配置OpenClaw”下的”执行命令” -
+选择API Key配置方式： - <strong>系统推荐</strong>：选择离服务器最近的API
+Key - <strong>手动输入</strong>：输入自己的百炼API Key - 选择API
+Key对应地域</p>
+<p><strong>c. 获取访问信息</strong> - 点击”访问控制页面”下的”执行命令” -
+获取OpenClaw WebUI地址 - （可选）查看并保存Token</p>
+<h3 id="第二阶段企业微信配置">第二阶段：企业微信配置</h3>
+<h4 id="步骤3创建企业微信智能机器人">步骤3：创建企业微信智能机器人</h4>
+<p><strong>a. 访问企业微信管理后台</strong> 1.
+登录：https://work.weixin.qq.com/wework_admin 2. 左侧导航栏 → “应用管理”
+→ “智能机器人”</p>
+<p><strong>b. 创建机器人</strong> 1. 点击”创建机器人” 2. 选择”手动创建”
+3. 选择”API模式创建”</p>
+<p><strong>c. 获取Token和EncodingAESKey</strong> 1.
+分别点击”Token”和”EncodingAESKey”后的”随机获取” 2.
+<strong>重要</strong>：复制并保存这两个值</p>
+<h4
+id="步骤4配置openclaw插件推荐方式">步骤4：配置OpenClaw插件（推荐方式）</h4>
+<p><strong>a. 在阿里云控制台配置</strong> 1. 回到阿里云服务器管理页面 2.
+在”企业微信配置”区域填入： - Token：上一步获取的Token -
+EncodingAESKey：上一步获取的EncodingAESKey 3. 点击”应用”</p>
+<p><strong>b. 获取回调URL</strong> 1. 在阿里云控制台查看OpenClaw的： -
+服务器公网IP地址 - 端口号（随机生成） 2. 构造回调URL格式：
+<code>http://&lt;服务器IP&gt;:&lt;端口号&gt;/webhooks/wecom</code>
+例如：<code>http://123.123.123.123:8080/webhooks/wecom</code></p>
+<p><strong>c. 完成机器人创建</strong> 1. 回到企业微信管理后台 2.
+在API模式创建页面填入： - URL：上一步构造的回调URL -
+Token：之前保存的Token - EncodingAESKey：之前保存的EncodingAESKey 3.
+点击”创建”</p>
+<h3 id="第三阶段验证和测试">第三阶段：验证和测试</h3>
+<h4 id="步骤5测试连接">步骤5：测试连接</h4>
+<ol type="1">
+<li>在企业微信中创建一个群聊</li>
+<li>点击”添加群成员”</li>
+<li>搜索刚创建的机器人名称，加入群聊</li>
+<li>在群聊中@机器人发送消息测试</li>
+</ol>
+<h4
+id="步骤6解决域名校验问题如遇到">步骤6：解决域名校验问题（如遇到）</h4>
+<p>如果出现”域名主体校验未通过”错误：</p>
+<p><strong>a. 配置自有域名</strong> 1.
+访问阿里云AppFlow域名管理：https://appflow.console.aliyun.com/domain/manage
+2. 点击”添加域名” 3.
+输入二级域名，如：<code>airobot.yourcompany.com</code></p>
+<p><strong>b. 配置DNS解析</strong> 1. 在域名管理平台添加CNAME记录 2.
+将二级域名解析到AppFlow提供的记录值</p>
+<p><strong>c. 更新回调URL</strong> 1. 使用新域名替换原来的IP地址 2.
+新URL格式：<code>http://airobot.yourcompany.com/webhooks/wecom</code></p>
+<h2 id="方案二腾讯云方案较简单">🚀 方案二：腾讯云方案（较简单）</h2>
+<h3 id="步骤1购买服务器">步骤1：购买服务器</h3>
+<ol type="1">
+<li>访问腾讯云轻量应用服务器</li>
+<li>选择”应用镜像” → “OpenClaw”</li>
+<li>完成购买</li>
+</ol>
+<h3 id="步骤2一键配置">步骤2：一键配置</h3>
+<ol type="1">
+<li>进入服务器管理页面</li>
+<li>使用腾讯云提供的可视化配置面板</li>
+<li>按照向导完成配置</li>
+</ol>
+<h3 id="步骤3企业微信配置">步骤3：企业微信配置</h3>
+<p>与阿里云方案类似，但界面更简化</p>
+<h2 id="方案三百度云方案预装插件">🚀 方案三：百度云方案（预装插件）</h2>
+<h3 id="步骤1购买服务器-1">步骤1：购买服务器</h3>
+<ol type="1">
+<li>访问百度智能云轻量应用服务器</li>
+<li>选择预装OpenClaw的镜像</li>
+<li><strong>注意</strong>：2026年2月1日后购买的实例已预装wecom插件</li>
+</ol>
+<h3 id="步骤2检查插件">步骤2：检查插件</h3>
+<ol type="1">
+<li>登录服务器</li>
+<li>检查wecom插件是否已安装</li>
+<li>如未安装，可通过重装镜像更新</li>
+</ol>
+<h3 id="步骤3配置企业微信">步骤3：配置企业微信</h3>
+<p>与阿里云方案步骤3-4类似</p>
+<h2 id="高级配置">🔧 高级配置</h2>
+<h3 id="更改ai模型">1. 更改AI模型</h3>
+<ol type="1">
+<li>进入OpenClaw WebUI</li>
+<li>点击”设置”图标</li>
+<li>搜索”Primary Model”</li>
+<li>更改为其他模型，格式：<code>alibaba-cloud/模型Code</code></li>
+<li>例如：<code>alibaba-cloud/qwen3-max-2026-01-23</code></li>
+</ol>
+<h3 id="配置定时任务">2. 配置定时任务</h3>
+<p><strong>a. 在企业微信中配置</strong> 1. 进入机器人设置 2.
+打开”消息推送” 3. 复制Webhook地址</p>
+<p><strong>b. 在AppFlow中配置定时任务</strong> 1. 访问AppFlow控制台 2.
+使用定时任务模板创建连接流 3. 配置： - 执行频率（cron表达式） -
+要执行的指令 - OpenClaw服务器信息 - 企业微信Webhook地址 4.
+发布连接流</p>
+<h3 id="安全配置">3. 安全配置</h3>
+<ol type="1">
+<li><strong>关闭公网访问</strong>：配置完成后可关闭WebUI公网访问</li>
+<li><strong>Token保护</strong>：不要泄露包含Token的完整URL</li>
+<li><strong>防火墙</strong>：仅开放必要的端口</li>
+</ol>
+<h2 id="常见问题解决">🛠️ 常见问题解决</h2>
+<h3 id="q1域名校验未通过怎么办">Q1：域名校验未通过怎么办？</h3>
+<p><strong>解决方案</strong>： 1. 确保使用企业自有域名 2.
+域名需已完成备案 3. 备案主体需与企业微信企业主体一致或有关联</p>
+<h3 id="q2机器人无响应怎么办">Q2：机器人无响应怎么办？</h3>
+<p><strong>排查步骤</strong>： 1. 检查服务器网络是否正常 2.
+确认端口已正确放通 3. 验证Token和EncodingAESKey是否正确 4.
+检查回调URL格式是否正确</p>
+<h3 id="q3消息发送失败怎么办">Q3：消息发送失败怎么办？</h3>
+<p><strong>检查项</strong>： 1. 企业微信机器人是否已添加到群聊 2.
+是否使用了正确的@方式 3. 服务器资源是否充足 4. API Key是否有剩余额度</p>
+<h3 id="q4如何查看openclaw日志">Q4：如何查看OpenClaw日志？</h3>
+<ol type="1">
+<li>进入服务器管理页面</li>
+<li>查看应用日志</li>
+<li>或通过WebUI查看运行状态</li>
+</ol>
+<h2 id="成本控制建议">📊 成本控制建议</h2>
+<h3 id="服务器成本">1. 服务器成本</h3>
+<ul>
+<li>选择按量计费，灵活控制</li>
+<li>根据使用频率调整配置</li>
+<li>非工作时间可关机节省费用</li>
+</ul>
+<h3 id="api调用成本">2. API调用成本</h3>
+<ul>
+<li>使用Coding Plan套餐（固定月费）</li>
+<li>设置使用限额</li>
+<li>监控API调用量</li>
+</ul>
+<h3 id="流量成本">3. 流量成本</h3>
+<ul>
+<li>内网通信优先</li>
+<li>压缩传输数据</li>
+<li>设置流量告警</li>
+</ul>
+<h2 id="最佳实践">🎯 最佳实践</h2>
+<h3 id="测试环境先行">1. 测试环境先行</h3>
+<ul>
+<li>先在小范围测试</li>
+<li>验证功能完整性</li>
+<li>收集用户反馈</li>
+</ul>
+<h3 id="分阶段部署">2. 分阶段部署</h3>
+<ul>
+<li>第一阶段：基础对话功能</li>
+<li>第二阶段：文件处理能力</li>
+<li>第三阶段：定时任务和自动化</li>
+</ul>
+<h3 id="用户培训">3. 用户培训</h3>
+<ul>
+<li>制作使用手册</li>
+<li>提供常见问题解答</li>
+<li>设立技术支持渠道</li>
+</ul>
+<h3 id="监控和维护">4. 监控和维护</h3>
+<ul>
+<li>定期检查服务器状态</li>
+<li>监控API使用情况</li>
+<li>更新OpenClaw版本</li>
+</ul>
+<h2 id="配置检查清单">📝 配置检查清单</h2>
+<h3 id="购买和部署阶段">购买和部署阶段</h3>
+<ul class="task-list">
+<li><input type="checkbox"
+disabled="" />已购买预装OpenClaw的云服务器</li>
+<li><input type="checkbox" disabled="" />服务器内存≥2GiB</li>
+<li><input type="checkbox" disabled="" />已配置API Key</li>
+<li><input type="checkbox" disabled="" />已获取服务器IP和端口</li>
+</ul>
+<h3 id="企业微信配置阶段">企业微信配置阶段</h3>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />已创建企业微信智能机器人</li>
+<li><input type="checkbox"
+disabled="" />已获取Token和EncodingAESKey</li>
+<li><input type="checkbox" disabled="" />已构造正确的回调URL</li>
+<li><input type="checkbox" disabled="" />已完成机器人创建</li>
+</ul>
+<h3 id="测试验证阶段">测试验证阶段</h3>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />已将机器人添加到群聊</li>
+<li><input type="checkbox" disabled="" />可以@机器人发送消息</li>
+<li><input type="checkbox" disabled="" />机器人能正常回复</li>
+<li><input type="checkbox" disabled="" />文件传输功能正常</li>
+</ul>
+<h3 id="安全配置阶段">安全配置阶段</h3>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />已关闭不必要的公网访问</li>
+<li><input type="checkbox" disabled="" />Token已妥善保存</li>
+<li><input type="checkbox" disabled="" />设置了使用限额</li>
+<li><input type="checkbox" disabled="" />配置了访问日志</li>
+</ul>
+<h2 id="重要链接">🔗 重要链接</h2>
+<h3 id="官方文档">官方文档</h3>
+<ul>
+<li>阿里云OpenClaw文档：https://help.aliyun.com/zh/simple-application-server/use-cases/openclaw-enterprise-wechat-integration</li>
+<li>企业微信管理后台：https://work.weixin.qq.com/wework_admin</li>
+<li>百炼模型广场：https://bailian.console.aliyun.com/model-market</li>
+</ul>
+<h3 id="购买链接">购买链接</h3>
+<ul>
+<li>阿里云购买：https://swasnext.console.aliyun.com/buy</li>
+<li>腾讯云购买：腾讯云控制台</li>
+<li>百度云购买：百度智能云控制台</li>
+</ul>
+<h3 id="工具链接">工具链接</h3>
+<ul>
+<li>Cron表达式生成器：在线搜索”cron表达式生成器”</li>
+<li>域名检测工具：https://whois.aliyun.com</li>
+</ul>
+<h2 id="预计时间">⏰ 预计时间</h2>
+<h3 id="新手用户">新手用户</h3>
+<ul>
+<li>购买和部署：30分钟</li>
+<li>企业微信配置：20分钟</li>
+<li>测试验证：10分钟</li>
+<li>总计：约1小时</li>
+</ul>
+<h3 id="有经验用户">有经验用户</h3>
+<ul>
+<li>总计：约30-40分钟</li>
+</ul>
+<h2 id="技术支持">🆘 技术支持</h2>
+<h3 id="官方支持">官方支持</h3>
+<ul>
+<li>阿里云工单系统</li>
+<li>企业微信客服</li>
+<li>OpenClaw社区</li>
+</ul>
+<h3 id="社区支持">社区支持</h3>
+<ul>
+<li>GitHub Issues</li>
+<li>技术论坛</li>
+<li>开发者社群</li>
+</ul>
+<hr />
+<p><strong>最后提醒</strong>： 1. 配置过程中请仔细保存所有Token和Key 2.
+建议先在测试环境验证 3. 生产环境请做好备份和监控 4.
+定期更新和维护系统</p>
+<p>按照以上步骤操作，你应该能成功将OpenClaw接入企业微信。如果遇到问题，可以参考常见问题部分或寻求官方技术支持。</p>

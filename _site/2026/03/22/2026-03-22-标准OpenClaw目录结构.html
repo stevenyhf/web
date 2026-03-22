@@ -1,0 +1,75 @@
+<p>标准OpenClaw目录结构 核心目录（通常在 /root/.openclaw/ 或
+/home/user/.openclaw/） .openclaw/ ├── config/ # 配置文件目录 │ ├──
+agents.json # 代理配置 │ ├── channels.json # 通道配置（飞书、微信等） │
+├── models.json # 模型配置 │ ├── nodes.json # 节点配置 │ └── skills.json
+# 技能配置 ├── data/ # 数据存储目录 │ ├── sessions/ # 会话数据 │ ├──
+cache/ # 缓存数据 │ ├── logs/ # 日志文件 │ └── uploads/ # 上传文件 ├──
+extensions/ # 扩展插件目录 │ ├── feishu/ # 飞书插件 │ ├── wecom/ #
+企业微信插件 │ ├── telegram/ # Telegram插件 │ └── qqbot/ # QQ机器人插件
+├── skills/ # 技能目录 │ ├── coding-agent/ # 编程代理技能 │ ├──
+feishu-doc/ # 飞书文档技能 │ ├── github/ # GitHub技能 │ └── weather/ #
+天气技能 ├── workspace/ # 工作空间（用户文件） │ ├── MEMORY.md #
+长期记忆 │ ├── SOUL.md # 身份定义 │ ├── USER.md # 用户信息 │ ├──
+daily-notes/ # 每日笔记 │ └── memory/ # 记忆文件 ├── logs/ # 系统日志 │
+├── gateway.log # 网关日志 │ ├── agent.log # 代理日志 │ └── error.log #
+错误日志 ├── bin/ # 二进制文件 │ └── openclaw # OpenClaw可执行文件 ├──
+lib/ # 库文件 ├── node_modules/ # Node.js模块 └── package.json #
+项目配置 🔧 各目录详细功能说明 1. config/ - 配置文件目录 config/ ├──
+agents.json # 定义AI代理的配置（模型、参数、行为） ├── channels.json #
+消息通道配置（飞书、微信、Telegram等） ├── models.json #
+AI模型配置（API密钥、端点、参数） ├── nodes.json #
+节点配置（分布式部署） └── skills.json # 技能启用和配置
+功能：所有核心系统配置，修改后需要重启服务。 2. data/ - 数据存储目录
+data/ ├── sessions/ # 用户会话数据（对话历史、状态） ├── cache/ #
+缓存数据（API响应、临时文件） ├── logs/ # 结构化日志数据 └── uploads/ #
+用户上传的文件（图片、文档等） 功能：运行时数据存储，支持持久化。 3.
+extensions/ - 扩展插件目录 extensions/ ├── feishu/ # 飞书集成 │ ├──
+config.json # 飞书应用配置 │ └── skills/ # 飞书专用技能 ├── wecom/ #
+企业微信集成 ├── telegram/ # Telegram集成 └── qqbot/ # QQ机器人集成
+功能：第三方平台集成，每个插件独立配置。 4. skills/ - 技能目录 skills/
+├── coding-agent/ # 编程助手技能 │ ├── SKILL.md # 技能说明文档 │ └──
+scripts/ # 相关脚本 ├── feishu-doc/ # 飞书文档操作 ├── github/ #
+GitHub集成 └── weather/ # 天气查询 功能：AI可用的功能模块，按需加载。 5.
+workspace/ - 工作空间目录 workspace/ ├── MEMORY.md # AI的长期记忆文件
+├── SOUL.md # AI的身份定义 ├── USER.md # 用户信息文件 ├── daily-notes/ #
+每日笔记（自动生成） │ └── YYYY-MM-DD.md ├── memory/ # 记忆文件目录 │
+└── YYYY-MM-DD.md └── projects/ # 用户项目文件
+功能：用户和AI的共享工作空间，AI会读写这些文件。 6. logs/ - 系统日志目录
+logs/ ├── gateway.log # 网关服务日志 ├── agent.log # AI代理日志 ├──
+error.log # 错误日志 └── access.log # 访问日志
+功能：系统运行监控和故障排查。 7. bin/ - 可执行文件 bin/ └── openclaw #
+主程序可执行文件 功能：命令行工具入口。 8. 其他重要文件 .openclaw/ ├──
+.env # 环境变量（API密钥等敏感信息） ├── package.json # Node.js项目配置
+├── package-lock.json # 依赖锁定 ├── tsconfig.json # TypeScript配置 └──
+README.md # 项目说明 🎯 腾讯云部署特有目录
+在腾讯云部署中，可能还有以下特有目录： 1. 云服务相关 .openclaw/ ├──
+cloud/ # 云服务配置 │ ├── tencent/ # 腾讯云特定配置 │ │ ├── cvm.json #
+云服务器配置 │ │ ├── cdn.json # CDN配置 │ │ └── cos.json # 对象存储配置
+│ └── nginx/ # Nginx配置 │ └── openclaw.conf └── ssl/ # SSL证书 ├──
+cert.pem └── key.pem 2. 反向代理配置 /etc/nginx/ └── sites-available/
+└── openclaw # Nginx站点配置 3. 系统服务 /etc/systemd/system/ └──
+openclaw.service # 系统服务配置 🔍 如何查看您的具体目录结构
+如果您需要查看您的腾讯云服务器上的实际目录结构，请提供以下之一：
+选项1：SSH访问 # 查看OpenClaw根目录 ls -la /root/.openclaw/</p>
+<h1 id="查看详细结构">查看详细结构</h1>
+<p>find /root/.openclaw/ -type f -name “*.json” | head -20 find
+/root/.openclaw/ -type d | tree -L 3 选项2：提供SSH凭据 如果您能提供：
+SSH密码 或SSH私钥 或临时访问令牌 我可以为您生成详细的目录结构报告。
+选项3：您自己执行命令 您可以在服务器上执行： # 生成目录树 cd
+/root/.openclaw/ &amp;&amp; tree -L 4</p>
+<h1 id="或生成详细列表">或生成详细列表</h1>
+<p>cd /root/.openclaw/ &amp;&amp; find . -type f | sort 📋
+重要配置文件说明 1. 核心配置文件 config/agents.json - AI代理行为配置
+config/channels.json - 消息通道（飞书等）配置 config/models.json -
+AI模型API配置 2. 飞书专用配置 extensions/feishu/config.json -
+飞书应用ID、密钥等 extensions/feishu/webhook.json - 飞书Webhook配置 3.
+服务配置 package.json - Node.js依赖和脚本 .env -
+环境变量（API密钥等敏感信息） 🛠️ 目录管理建议 需要定期清理的目录： logs/
+- 日志文件（可设置日志轮转） data/cache/ - 缓存文件（可定期清理）
+data/uploads/ - 临时上传文件 需要备份的目录： workspace/ -
+用户工作空间（重要！） config/ - 配置文件 extensions/ - 插件配置
+不要手动修改的目录： node_modules/ - 依赖库（通过npm管理） bin/ -
+可执行文件（通过安装更新）
+韩立，这是标准的OpenClaw目录结构。如果您需要查看您的腾讯云服务器上的具体结构，请提供SSH访问方式，或者您可以自己在服务器上执行tree
+/root/.openclaw/命令查看。</p>
+<p>您对哪个具体目录或文件的功能有特别关注吗？</p>
