@@ -1,0 +1,828 @@
+<h1 id="openclaw本地部署详细指南">OpenClaw本地部署详细指南</h1>
+
+<h2 id="-部署目标">🎯 部署目标</h2>
+<p>在韩立的本地电脑上部署OpenClaw，实现：</p>
+<ol>
+  <li>本地AI助手服务</li>
+  <li>与本地IM工具（微信、飞书、QQ）集成</li>
+  <li>本地文件系统访问</li>
+  <li>完全控制和安全的数据管理</li>
+</ol>
+
+<hr />
+
+<h2 id="-部署前检查清单">📋 部署前检查清单</h2>
+
+<h3 id="硬件要求检查">硬件要求检查：</h3>
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" /><strong>CPU</strong>：4核或以上（Intel i5/i7或AMD Ryzen 5/7）</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" /><strong>内存</strong>：16GB或以上（推荐32GB）</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" /><strong>存储</strong>：512GB SSD或以上</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" /><strong>网络</strong>：稳定互联网连接</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" /><strong>操作系统</strong>：Windows 10/11, macOS 10.15+, Ubuntu 20.04+</li>
+</ul>
+
+<h3 id="软件环境检查">软件环境检查：</h3>
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" /><strong>Node.js</strong>：v18.0.0或更高版本</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" /><strong>npm</strong>：v8.0.0或更高版本</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" /><strong>Git</strong>：已安装并可正常使用</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" /><strong>Python</strong>：3.8或更高版本（可选，用于某些扩展）</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" /><strong>Docker</strong>：可选，用于容器化部署</li>
+</ul>
+
+<h3 id="权限检查">权限检查：</h3>
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />管理员权限（安装软件需要）</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />防火墙配置权限</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />网络访问权限</li>
+</ul>
+
+<hr />
+
+<h2 id="-部署步骤详解">🚀 部署步骤详解</h2>
+
+<h3 id="阶段1基础环境准备">阶段1：基础环境准备</h3>
+
+<h4 id="步骤11检查当前系统">步骤1.1：检查当前系统</h4>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Windows（PowerShell或CMD）</span>
+systeminfo | findstr /C:<span class="s2">"OS Name"</span> /C:<span class="s2">"OS Version"</span>
+wmic cpu get name
+wmic memorychip get capacity
+
+<span class="c"># macOS</span>
+system_profiler SPHardwareDataType
+sysctl <span class="nt">-n</span> hw.ncpu
+sysctl <span class="nt">-n</span> hw.memsize
+
+<span class="c"># Linux</span>
+<span class="nb">cat</span> /etc/os-release
+<span class="nb">nproc
+</span>free <span class="nt">-h</span>
+</code></pre></div></div>
+
+<h4 id="步骤12安装nodejs">步骤1.2：安装Node.js</h4>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Windows/macOS：从官网下载安装包</span>
+<span class="c"># https://nodejs.org/en/download/</span>
+
+<span class="c"># Linux（Ubuntu/Debian）</span>
+curl <span class="nt">-fsSL</span> https://deb.nodesource.com/setup_18.x | <span class="nb">sudo</span> <span class="nt">-E</span> bash -
+<span class="nb">sudo </span>apt <span class="nb">install</span> <span class="nt">-y</span> nodejs
+
+<span class="c"># 验证安装</span>
+node <span class="nt">--version</span>  <span class="c"># 应该显示 v18.x.x 或更高</span>
+npm <span class="nt">--version</span>   <span class="c"># 应该显示 v8.x.x 或更高</span>
+</code></pre></div></div>
+
+<h4 id="步骤13安装git">步骤1.3：安装Git</h4>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Windows：从官网下载 Git for Windows</span>
+<span class="c"># https://git-scm.com/download/win</span>
+
+<span class="c"># macOS</span>
+brew <span class="nb">install </span>git
+
+<span class="c"># Linux（Ubuntu/Debian）</span>
+<span class="nb">sudo </span>apt <span class="nb">install </span>git <span class="nt">-y</span>
+
+<span class="c"># 验证安装</span>
+git <span class="nt">--version</span>
+</code></pre></div></div>
+
+<h3 id="阶段2openclaw安装">阶段2：OpenClaw安装</h3>
+
+<h4 id="步骤21安装openclaw-cli">步骤2.1：安装OpenClaw CLI</h4>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 全局安装OpenClaw</span>
+npm <span class="nb">install</span> <span class="nt">-g</span> openclaw
+
+<span class="c"># 验证安装</span>
+openclaw <span class="nt">--version</span>
+</code></pre></div></div>
+
+<h4 id="步骤22创建工作空间">步骤2.2：创建工作空间</h4>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 创建专用目录</span>
+<span class="nb">mkdir</span> ~/openclaw-workspace
+<span class="nb">cd</span> ~/openclaw-workspace
+
+<span class="c"># 初始化OpenClaw工作空间</span>
+openclaw init <span class="nt">--workspace</span> <span class="nb">.</span>
+
+<span class="c"># 查看生成的文件</span>
+<span class="nb">ls</span> <span class="nt">-la</span>
+</code></pre></div></div>
+
+<h4 id="步骤23基础配置">步骤2.3：基础配置</h4>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 编辑基础配置文件</span>
+<span class="c"># Windows：使用记事本或VS Code</span>
+<span class="c"># macOS/Linux：使用vim或nano</span>
+
+<span class="c"># 配置示例：config/agents.json</span>
+<span class="o">{</span>
+  <span class="s2">"default"</span>: <span class="o">{</span>
+    <span class="s2">"model"</span>: <span class="s2">"deepseek/deepseek-chat"</span>,
+    <span class="s2">"temperature"</span>: 0.7,
+    <span class="s2">"max_tokens"</span>: 2000
+  <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c"># 配置示例：config/channels.json</span>
+<span class="o">{</span>
+  <span class="s2">"local"</span>: <span class="o">{</span>
+    <span class="s2">"type"</span>: <span class="s2">"console"</span>,
+    <span class="s2">"enabled"</span>: <span class="nb">true</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="阶段3启动和测试">阶段3：启动和测试</h3>
+
+<h4 id="步骤31启动网关服务">步骤3.1：启动网关服务</h4>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 启动OpenClaw网关</span>
+openclaw gateway start
+
+<span class="c"># 或以后台服务方式启动</span>
+openclaw gateway start <span class="nt">--daemon</span>
+
+<span class="c"># 检查服务状态</span>
+openclaw gateway status
+</code></pre></div></div>
+
+<h4 id="步骤32测试基础功能">步骤3.2：测试基础功能</h4>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 测试命令行交互</span>
+openclaw chat
+
+<span class="c"># 或通过HTTP接口测试</span>
+curl http://localhost:18789/health
+
+<span class="c"># 预期响应：{"status":"ok","version":"2026.2.x"}</span>
+</code></pre></div></div>
+
+<h4 id="步骤33访问web界面">步骤3.3：访问Web界面</h4>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>打开浏览器访问：
+http://localhost:18789
+
+如果一切正常，您将看到OpenClaw的Web界面。
+</code></pre></div></div>
+
+<h3 id="阶段4im工具集成">阶段4：IM工具集成</h3>
+
+<h4 id="步骤41飞书集成配置">步骤4.1：飞书集成配置</h4>
+
+<p><strong>A. 创建飞书应用</strong>：</p>
+<ol>
+  <li>访问 <a href="https://open.feishu.cn/">飞书开放平台</a></li>
+  <li>登录您的飞书账号</li>
+  <li>创建”企业自建应用”</li>
+  <li>获取以下信息：
+    <ul>
+      <li>App ID</li>
+      <li>App Secret</li>
+      <li>Verification Token</li>
+      <li>Encrypt Key（可选）</li>
+    </ul>
+  </li>
+</ol>
+
+<p><strong>B. 配置OpenClaw</strong>：</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 编辑飞书扩展配置</span>
+vim ~/openclaw-workspace/extensions/feishu/config.json
+</code></pre></div></div>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"app_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"您的App ID"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"app_secret"</span><span class="p">:</span><span class="w"> </span><span class="s2">"您的App Secret"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"verification_token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"您的Verification Token"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"encrypt_key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"您的Encrypt Key（如果有）"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"webhook"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/feishu/webhook"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>C. 配置飞书事件</strong>：</p>
+<ol>
+  <li>在飞书开放平台配置”事件订阅”</li>
+  <li>请求地址：<code class="language-plaintext highlighter-rouge">http://您的公网IP:18789/feishu/webhook</code></li>
+  <li>启用事件：<code class="language-plaintext highlighter-rouge">im.message.receive_v1</code></li>
+  <li>保存并发布应用</li>
+</ol>
+
+<h4 id="步骤42微信集成配置可选">步骤4.2：微信集成配置（可选）</h4>
+
+<p><strong>使用微信网页版协议</strong>：</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 安装微信集成扩展</span>
+<span class="nb">cd</span> ~/openclaw-workspace/extensions
+git clone https://github.com/openclaw/wechat-integration.git wechat
+<span class="nb">cd </span>wechat
+npm <span class="nb">install</span>
+
+<span class="c"># 配置微信</span>
+<span class="nb">cp </span>config.example.json config.json
+<span class="c"># 编辑config.json，配置相关参数</span>
+</code></pre></div></div>
+
+<p><strong>配置说明</strong>：</p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"wechat"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"login_method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"qrcode"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"auto_reply"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"forward_to_openclaw"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"monitored_chats"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"工作群"</span><span class="p">,</span><span class="w"> </span><span class="s2">"家人群"</span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h4 id="步骤43qq集成配置可选">步骤4.3：QQ集成配置（可选）</h4>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 安装QQ集成</span>
+<span class="nb">cd</span> ~/openclaw-workspace/extensions
+git clone https://github.com/openclaw/qq-integration.git qq
+<span class="nb">cd </span>qq
+npm <span class="nb">install</span>
+</code></pre></div></div>
+
+<h3 id="阶段5文件系统集成">阶段5：文件系统集成</h3>
+
+<h4 id="步骤51配置文件访问权限">步骤5.1：配置文件访问权限</h4>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">//</span><span class="w"> </span><span class="err">~/openclaw-workspace/config/permissions.json</span><span class="w">
+</span><span class="p">{</span><span class="w">
+  </span><span class="nl">"file_access"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"allowed_paths"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="s2">"~/Documents/"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"~/Downloads/"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"~/Desktop/OpenClawProjects/"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"C:/Users/韩立/Documents/"</span><span class="w">  </span><span class="err">//</span><span class="w"> </span><span class="err">Windows路径示例</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"restricted_paths"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="s2">"~/Library/"</span><span class="p">,</span><span class="w">      </span><span class="err">//</span><span class="w"> </span><span class="err">macOS系统文件</span><span class="w">
+      </span><span class="s2">"/etc/"</span><span class="p">,</span><span class="w">           </span><span class="err">//</span><span class="w"> </span><span class="err">Linux系统配置</span><span class="w">
+      </span><span class="s2">"C:/Windows/"</span><span class="w">      </span><span class="err">//</span><span class="w"> </span><span class="err">Windows系统文件</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"max_file_size_mb"</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h4 id="步骤52创建文件操作技能">步骤5.2：创建文件操作技能</h4>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 创建自定义技能目录</span>
+<span class="nb">mkdir</span> <span class="nt">-p</span> ~/openclaw-workspace/skills/file-manager
+
+<span class="c"># 创建技能配置文件</span>
+<span class="nb">cat</span> <span class="o">&gt;</span> ~/openclaw-workspace/skills/file-manager/SKILL.md <span class="o">&lt;&lt;</span> <span class="sh">'</span><span class="no">EOF</span><span class="sh">'
+# 文件管理器技能
+
+## 功能
+- 浏览本地文件
+- 搜索文件内容
+- 整理文件
+- 文件格式转换
+
+## 使用方式
+</span></code></pre></div></div>
+<p>查看文件 [路径]
+搜索文件 [关键词]
+整理文件夹 [路径]</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+## 权限
+需要文件访问权限。
+EOF
+</code></pre></div></div>
+
+<h3 id="阶段6安全配置">阶段6：安全配置</h3>
+
+<h4 id="步骤61配置防火墙">步骤6.1：配置防火墙</h4>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Windows防火墙</span>
+<span class="c"># 允许端口18789入站</span>
+
+<span class="c"># macOS</span>
+<span class="nb">sudo </span>pfctl <span class="nt">-f</span> /etc/pf.conf
+
+<span class="c"># Linux (Ubuntu)</span>
+<span class="nb">sudo </span>ufw allow 18789/tcp
+<span class="nb">sudo </span>ufw <span class="nb">enable</span>
+</code></pre></div></div>
+
+<h4 id="步骤62配置访问控制">步骤6.2：配置访问控制</h4>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">//</span><span class="w"> </span><span class="err">~/openclaw-workspace/config/security.json</span><span class="w">
+</span><span class="p">{</span><span class="w">
+  </span><span class="nl">"authentication"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"api_keys"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"your-secret-api-key"</span><span class="p">],</span><span class="w">
+    </span><span class="nl">"require_auth_for_local"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"rate_limiting"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"requests_per_minute"</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"audit_logging"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"log_file"</span><span class="p">:</span><span class="w"> </span><span class="s2">"audit.log"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"retention_days"</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h4 id="步骤63配置自动更新">步骤6.3：配置自动更新</h4>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 创建更新脚本</span>
+<span class="nb">cat</span> <span class="o">&gt;</span> ~/openclaw-workspace/update.sh <span class="o">&lt;&lt;</span> <span class="sh">'</span><span class="no">EOF</span><span class="sh">'
+#!/bin/bash
+echo "开始更新OpenClaw..."
+cd ~/openclaw-workspace
+
+# 备份当前配置
+tar -czf backup-</span><span class="si">$(</span><span class="nb">date</span> +%Y%m%d<span class="si">)</span><span class="sh">.tar.gz config/ extensions/ skills/
+
+# 更新OpenClaw CLI
+npm update -g openclaw
+
+# 更新扩展
+for ext in extensions/*; do
+  if [ -d "</span><span class="nv">$ext</span><span class="sh">" ] &amp;&amp; [ -f "</span><span class="nv">$ext</span><span class="sh">/package.json" ]; then
+    echo "更新扩展: </span><span class="si">$(</span><span class="nb">basename</span> <span class="nv">$ext</span><span class="si">)</span><span class="sh">"
+    cd "</span><span class="nv">$ext</span><span class="sh">" &amp;&amp; npm update
+    cd -
+  fi
+done
+
+echo "更新完成！"
+</span><span class="no">EOF
+
+</span><span class="nb">chmod</span> +x ~/openclaw-workspace/update.sh
+</code></pre></div></div>
+
+<h3 id="阶段7测试和验证">阶段7：测试和验证</h3>
+
+<h4 id="步骤71功能测试清单">步骤7.1：功能测试清单</h4>
+
+<p><strong>基础功能测试</strong>：</p>
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />网关服务启动正常</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Web界面可访问</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />命令行交互正常</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />健康检查接口正常</li>
+</ul>
+
+<p><strong>IM集成测试</strong>：</p>
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />飞书消息接收测试</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />飞书消息回复测试</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />微信登录测试（如果配置）</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />微信消息转发测试</li>
+</ul>
+
+<p><strong>文件系统测试</strong>：</p>
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />文件浏览功能测试</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />文件搜索功能测试</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />权限控制测试</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />大文件处理测试</li>
+</ul>
+
+<p><strong>安全测试</strong>：</p>
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />防火墙配置验证</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />访问控制测试</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />审计日志记录测试</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />备份功能测试</li>
+</ul>
+
+<h4 id="步骤72性能测试">步骤7.2：性能测试</h4>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 压力测试脚本示例</span>
+<span class="nb">cat</span> <span class="o">&gt;</span> ~/openclaw-workspace/performance-test.js <span class="o">&lt;&lt;</span> <span class="sh">'</span><span class="no">EOF</span><span class="sh">'
+const http = require('http');
+
+const options = {
+  hostname: 'localhost',
+  port: 18789,
+  path: '/health',
+  method: 'GET'
+};
+
+let success = 0;
+let failure = 0;
+
+for (let i = 0; i &lt; 100; i++) {
+  const req = http.request(options, (res) =&gt; {
+    if (res.statusCode === 200) {
+      success++;
+    } else {
+      failure++;
+    }
+  });
+  
+  req.on('error', (e) =&gt; {
+    failure++;
+  });
+  
+  req.end();
+}
+
+setTimeout(() =&gt; {
+  console.log(`测试完成：成功 </span><span class="k">${</span><span class="nv">success</span><span class="k">}</span><span class="sh">，失败 </span><span class="k">${</span><span class="nv">failure</span><span class="k">}</span><span class="sh">`);
+  console.log(`成功率：</span><span class="k">${</span><span class="p">(success / 100 * 100).toFixed(2)</span><span class="k">}</span><span class="sh">%`);
+}, 2000);
+</span><span class="no">EOF
+
+</span>node ~/openclaw-workspace/performance-test.js
+</code></pre></div></div>
+
+<h3 id="阶段8优化和调优">阶段8：优化和调优</h3>
+
+<h4 id="步骤81性能优化">步骤8.1：性能优化</h4>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">//</span><span class="w"> </span><span class="err">~/openclaw-workspace/config/performance.json</span><span class="w">
+</span><span class="p">{</span><span class="w">
+  </span><span class="nl">"cache"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"ttl_seconds"</span><span class="p">:</span><span class="w"> </span><span class="mi">300</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"max_size_mb"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"concurrency"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"max_parallel_requests"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"queue_size"</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"memory"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"max_heap_mb"</span><span class="p">:</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"gc_interval_seconds"</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h4 id="步骤82日志配置">步骤8.2：日志配置</h4>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">//</span><span class="w"> </span><span class="err">~/openclaw-workspace/config/logging.json</span><span class="w">
+</span><span class="p">{</span><span class="w">
+  </span><span class="nl">"level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"info"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"transports"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"file"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"filename"</span><span class="p">:</span><span class="w"> </span><span class="s2">"logs/openclaw.log"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"maxsize"</span><span class="p">:</span><span class="w"> </span><span class="mi">10485760</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"maxFiles"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"console"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"colorize"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h4 id="步骤83监控配置">步骤8.3：监控配置</h4>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 安装监控工具</span>
+npm <span class="nb">install </span>prom-client express <span class="nt">--save</span>
+
+<span class="c"># 创建监控端点</span>
+<span class="nb">cat</span> <span class="o">&gt;</span> ~/openclaw-workspace/monitor.js <span class="o">&lt;&lt;</span> <span class="sh">'</span><span class="no">EOF</span><span class="sh">'
+const express = require('express');
+const client = require('prom-client');
+
+const app = express();
+const register = new client.Registry();
+
+// 添加默认指标
+client.collectDefaultMetrics({ register });
+
+app.get('/metrics', async (req, res) =&gt; {
+  res.set('Content-Type', register.contentType);
+  res.end(await register.metrics());
+});
+
+app.listen(9090, () =&gt; {
+  console.log('监控服务运行在 http://localhost:9090/metrics');
+});
+</span><span class="no">EOF
+</span></code></pre></div></div>
+
+<h3 id="阶段9故障排除">阶段9：故障排除</h3>
+
+<h4 id="常见问题及解决方案">常见问题及解决方案：</h4>
+
+<p><strong>问题1：端口被占用</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 检查端口占用</span>
+netstat <span class="nt">-ano</span> | findstr :18789  <span class="c"># Windows</span>
+lsof <span class="nt">-i</span> :18789                 <span class="c"># macOS/Linux</span>
+
+<span class="c"># 解决方案：修改端口</span>
+openclaw gateway start <span class="nt">--port</span> 18790
+</code></pre></div></div>
+
+<p><strong>问题2：权限不足</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Windows：以管理员身份运行</span>
+<span class="c"># macOS/Linux：使用sudo</span>
+<span class="nb">sudo </span>openclaw gateway start
+</code></pre></div></div>
+
+<p><strong>问题3：Node.js版本不兼容</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 检查Node.js版本</span>
+node <span class="nt">--version</span>
+
+<span class="c"># 升级Node.js</span>
+<span class="c"># Windows/macOS：重新下载安装包</span>
+<span class="c"># Linux：使用nvm管理版本</span>
+curl <span class="nt">-o-</span> https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+nvm <span class="nb">install </span>18
+nvm use 18
+</code></pre></div></div>
+
+<p><strong>问题4：内存不足</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 查看内存使用</span>
+top  <span class="c"># 或 htop, taskmgr</span>
+
+<span class="c"># 解决方案：</span>
+<span class="c"># 1. 增加虚拟内存</span>
+<span class="c"># 2. 优化OpenClaw配置</span>
+<span class="c"># 3. 升级硬件</span>
+</code></pre></div></div>
+
+<p><strong>问题5：网络连接问题</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 测试本地连接</span>
+curl http://localhost:18789/health
+
+<span class="c"># 测试外部访问（如果有公网IP）</span>
+curl http://您的公网IP:18789/health
+
+<span class="c"># 检查防火墙</span>
+<span class="c"># Windows：检查Windows Defender防火墙</span>
+<span class="c"># macOS：检查系统偏好设置-&gt;安全-&gt;防火墙</span>
+<span class="c"># Linux：sudo ufw status</span>
+</code></pre></div></div>
+
+<h3 id="阶段10维护和备份">阶段10：维护和备份</h3>
+
+<h4 id="步骤101创建备份脚本">步骤10.1：创建备份脚本</h4>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cat</span> <span class="o">&gt;</span> ~/openclaw-workspace/backup.sh <span class="o">&lt;&lt;</span> <span class="sh">'</span><span class="no">EOF</span><span class="sh">'
+#!/bin/bash
+BACKUP_DIR="/path/to/backup/folder"
+DATE=</span><span class="si">$(</span><span class="nb">date</span> +%Y%m%d_%H%M%S<span class="si">)</span><span class="sh">
+BACKUP_FILE="</span><span class="nv">$BACKUP_DIR</span><span class="sh">/openclaw-backup-</span><span class="nv">$DATE</span><span class="sh">.tar.gz"
+
+echo "开始备份OpenClaw工作空间..."
+
+# 创建备份目录
+mkdir -p "</span><span class="nv">$BACKUP_DIR</span><span class="sh">"
+
+# 备份重要文件
+tar -czf "</span><span class="nv">$BACKUP_FILE</span><span class="sh">" </span><span class="se">\</span><span class="sh">
+  ~/openclaw-workspace/config/ </span><span class="se">\</span><span class="sh">
+  ~/openclaw-workspace/extensions/ </span><span class="se">\</span><span class="sh">
+  ~/openclaw-workspace/skills/ </span><span class="se">\</span><span class="sh">
+  ~/openclaw-workspace/workspace/ </span><span class="se">\</span><span class="sh">
+  ~/openclaw-workspace/*.json </span><span class="se">\</span><span class="sh">
+  ~/openclaw-workspace/*.md
+
+# 备份数据库（如果有）
+if [ -f ~/openclaw-workspace/data/database.sqlite ]; then
+  cp ~/openclaw-workspace/data/database.sqlite "</span><span class="nv">$BACKUP_DIR</span><span class="sh">/database-</span><span class="nv">$DATE</span><span class="sh">.sqlite"
+fi
+
+echo "备份完成：</span><span class="nv">$BACKUP_FILE</span><span class="sh">"
+echo "备份大小：</span><span class="si">$(</span><span class="nb">du</span> <span class="nt">-h</span> <span class="s2">"</span><span class="nv">$BACKUP_FILE</span><span class="s2">"</span> | <span class="nb">cut</span> <span class="nt">-f1</span><span class="si">)</span><span class="sh">"
+
+# 清理旧备份（保留最近7天）
+find "</span><span class="nv">$BACKUP_DIR</span><span class="sh">" -name "openclaw-backup-*.tar.gz" -mtime +7 -delete
+find "</span><span class="nv">$BACKUP_DIR</span><span class="sh">" -name "database-*.sqlite" -mtime +7 -delete
+</span><span class="no">EOF
+
+</span><span class="nb">chmod</span> +x ~/openclaw-workspace/backup.sh
+</code></pre></div></div>
+
+<h4 id="步骤102设置自动备份">步骤10.2：设置自动备份</h4>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Linux/macOS：使用cron</span>
+crontab <span class="nt">-e</span>
+<span class="c"># 添加以下行（每天凌晨2点备份）</span>
+0 2 <span class="k">*</span> <span class="k">*</span> <span class="k">*</span> /home/韩立/openclaw-workspace/backup.sh
+
+<span class="c"># Windows：使用任务计划程序</span>
+<span class="c"># 1. 打开"任务计划程序"</span>
+<span class="c"># 2. 创建基本任务</span>
+<span class="c"># 3. 设置触发器：每天2:00 AM</span>
+<span class="c"># 4. 操作：启动程序，选择backup.sh</span>
+</code></pre></div></div>
+
+<h4 id="步骤103创建恢复脚本">步骤10.3：创建恢复脚本</h4>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cat</span> <span class="o">&gt;</span> ~/openclaw-workspace/restore.sh <span class="o">&lt;&lt;</span> <span class="sh">'</span><span class="no">EOF</span><span class="sh">'
+#!/bin/bash
+if [ -z "</span><span class="nv">$1</span><span class="sh">" ]; then
+  echo "使用方法: </span><span class="nv">$0</span><span class="sh"> &lt;备份文件&gt;"
+  echo "示例: </span><span class="nv">$0</span><span class="sh"> /path/to/backup/openclaw-backup-20260301.tar.gz"
+  exit 1
+fi
+
+BACKUP_FILE="</span><span class="nv">$1</span><span class="sh">"
+
+if [ ! -f "</span><span class="nv">$BACKUP_FILE</span><span class="sh">" ]; then
+  echo "错误：备份文件不存在: </span><span class="nv">$BACKUP_FILE</span><span class="sh">"
+  exit 1
+fi
+
+echo "警告：这将覆盖当前的OpenClaw配置！"
+read -p "是否继续？(y/N): " -n 1 -r
+echo
+if [[ ! </span><span class="nv">$REPLY</span><span class="sh"> =~ ^[Yy]</span><span class="nv">$ </span><span class="sh">]]; then
+  echo "恢复操作已取消"
+  exit 0
+fi
+
+echo "开始恢复OpenClaw配置..."
+
+# 停止OpenClaw服务
+openclaw gateway stop 2&gt;/dev/null || true
+
+# 备份当前配置
+CURRENT_BACKUP="/tmp/openclaw-current-</span><span class="si">$(</span><span class="nb">date</span> +%s<span class="si">)</span><span class="sh">.tar.gz"
+tar -czf "</span><span class="nv">$CURRENT_BACKUP</span><span class="sh">" ~/openclaw-workspace/config/ ~/openclaw-workspace/extensions/ ~/openclaw-workspace/skills/
+
+# 解压备份文件
+tar -xzf "</span><span class="nv">$BACKUP_FILE</span><span class="sh">" -C ~/openclaw-workspace/
+
+echo "恢复完成！"
+echo "当前配置已备份到: </span><span class="nv">$CURRENT_BACKUP</span><span class="sh">"
+echo "请重新启动OpenClaw服务: openclaw gateway start"
+</span><span class="no">EOF
+
+</span><span class="nb">chmod</span> +x ~/openclaw-workspace/restore.sh
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="-部署进度跟踪表">📊 部署进度跟踪表</h2>
+
+<h3 id="部署阶段跟踪">部署阶段跟踪：</h3>
+<p>| 阶段 | 任务 | 状态 | 预计时间 | 实际时间 | 备注 |
+|——|——|——|———-|———-|——|
+| 1 | 环境准备 | □ | 30分钟 | | |
+| 2 | OpenClaw安装 | □ | 20分钟 | | |
+| 3 | 启动测试 | □ | 15分钟 | | |
+| 4 | IM工具集成 | □ | 60分钟 | | |
+| 5 | 文件系统集成 | □ | 30分钟 | | |
+| 6 | 安全配置 | □ | 30分钟 | | |
+| 7 | 测试验证 | □ | 45分钟 | | |
+| 8 | 优化调优 | □ | 30分钟 | | |
+| 9 | 故障排除 | □ | 可变 | | |
+| 10 | 维护备份 | □ | 20分钟 | | |</p>
+
+<p><strong>总预计时间</strong>：约4小时</p>
+
+<hr />
+
+<h2 id="-部署成功标准">🎯 部署成功标准</h2>
+
+<h3 id="必须完成">必须完成：</h3>
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />OpenClaw网关服务正常启动</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Web界面可正常访问</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />基础对话功能正常</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />文件访问功能正常</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />至少一个IM工具集成正常</li>
+</ul>
+
+<h3 id="建议完成">建议完成：</h3>
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />飞书集成配置完成</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />微信集成配置完成（可选）</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />安全配置完成</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />备份机制设置完成</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />监控配置完成</li>
+</ul>
+
+<h3 id="高级功能可选">高级功能（可选）：</h3>
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />自动化工作流配置</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />自定义技能开发</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />多用户支持配置</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />高级监控和告警</li>
+</ul>
+
+<hr />
+
+<h2 id="️-注意事项">⚠️ 注意事项</h2>
+
+<h3 id="安全注意事项">安全注意事项：</h3>
+<ol>
+  <li><strong>不要</strong>在配置文件硬编码敏感信息（API密钥等）</li>
+  <li><strong>务必</strong>配置防火墙，只开放必要端口</li>
+  <li><strong>定期</strong>更新OpenClaw和依赖包</li>
+  <li><strong>启用</strong>操作审计日志</li>
+  <li><strong>设置</strong>定期备份</li>
+</ol>
+
+<h3 id="性能注意事项">性能注意事项：</h3>
+<ol>
+  <li>监控内存使用，避免内存泄漏</li>
+  <li>配置合理的缓存策略</li>
+  <li>优化数据库查询（如果有）</li>
+  <li>定期清理日志文件</li>
+</ol>
+
+<h3 id="维护注意事项">维护注意事项：</h3>
+<ol>
+  <li>定期检查服务状态</li>
+  <li>监控磁盘空间使用</li>
+  <li>查看错误日志</li>
+  <li>测试备份恢复流程</li>
+</ol>
+
+<hr />
+
+<h2 id="-故障排除工具箱">🔧 故障排除工具箱</h2>
+
+<h3 id="诊断命令">诊断命令：</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 检查服务状态</span>
+openclaw gateway status
+
+<span class="c"># 查看日志</span>
+<span class="nb">tail</span> <span class="nt">-f</span> ~/openclaw-workspace/logs/openclaw.log
+
+<span class="c"># 检查端口占用</span>
+netstat <span class="nt">-tulpn</span> | <span class="nb">grep</span> :18789
+
+<span class="c"># 检查进程</span>
+ps aux | <span class="nb">grep </span>openclaw
+
+<span class="c"># 检查网络连接</span>
+curl <span class="nt">-v</span> http://localhost:18789/health
+</code></pre></div></div>
+
+<h3 id="重置命令">重置命令：</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 重置配置（危险！备份先！）</span>
+openclaw init <span class="nt">--force</span> <span class="nt">--workspace</span> ~/openclaw-workspace
+
+<span class="c"># 重新安装</span>
+npm uninstall <span class="nt">-g</span> openclaw
+npm <span class="nb">install</span> <span class="nt">-g</span> openclaw
+
+<span class="c"># 清理缓存</span>
+npm cache clean <span class="nt">--force</span>
+</code></pre></div></div>
+
+<h3 id="调试模式">调试模式：</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 启动调试模式</span>
+openclaw gateway start <span class="nt">--debug</span>
+
+<span class="c"># 查看详细日志</span>
+openclaw gateway start <span class="nt">--log-level</span> debug
+
+<span class="c"># 测试特定功能</span>
+openclaw <span class="nb">test</span> <span class="nt">--all</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="-支持资源">📞 支持资源</h2>
+
+<h3 id="官方资源">官方资源：</h3>
+<ol>
+  <li><strong>OpenClaw文档</strong>：https://docs.openclaw.ai</li>
+  <li><strong>GitHub仓库</strong>：https://github.com/openclaw/openclaw</li>
+  <li><strong>Discord社区</strong>：https://discord.gg/clawd</li>
+  <li><strong>问题反馈</strong>：GitHub Issues</li>
+</ol>
+
+<h3 id="社区资源">社区资源：</h3>
+<ol>
+  <li><strong>技术博客</strong>：相关技术博客和教程</li>
+  <li><strong>Stack Overflow</strong>：OpenClaw相关问答</li>
+  <li><strong>Reddit社区</strong>：r/openclaw</li>
+  <li><strong>中文社区</strong>：相关技术论坛</li>
+</ol>
+
+<h3 id="本地支持">本地支持：</h3>
+<ol>
+  <li><strong>系统日志</strong>：<code class="language-plaintext highlighter-rouge">~/openclaw-workspace/logs/</code></li>
+  <li><strong>配置文档</strong>：本指南及相关配置文件</li>
+  <li><strong>备份文件</strong>：定期备份的配置和数据</li>
+</ol>
+
+<hr />
+
+<h2 id="-部署完成确认">🎉 部署完成确认</h2>
+
+<h3 id="最终检查清单">最终检查清单：</h3>
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />所有必须完成的项目都已勾选</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />服务运行稳定超过24小时</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />关键功能测试通过</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />安全配置检查完成</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />备份恢复测试通过</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />文档整理完成</li>
+</ul>
+
+<h3 id="部署成功标志">部署成功标志：</h3>
+<ol>
+  <li>✅ OpenClaw服务稳定运行</li>
+  <li>✅ IM工具集成正常工作</li>
+  <li>✅ 文件访问功能正常</li>
+  <li>✅ 安全配置生效</li>
+  <li>✅ 监控和备份运行正常</li>
+</ol>
+
+<hr />
+
+<p><strong>文档版本</strong>：v1.0<br />
+<strong>创建时间</strong>：2026年3月1日<br />
+<strong>适用系统</strong>：Windows/macOS/Linux<br />
+<strong>目标用户</strong>：韩立<br />
+<strong>部署类型</strong>：本地单机部署</p>
+
+<p><strong>下一步</strong>：按照本指南逐步执行，遇到问题时参考故障排除部分。</p>
