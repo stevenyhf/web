@@ -1,0 +1,119 @@
+---
+title: 2. 测试修复结果
+---
+
+<p>这些skills分别装在不同的目录中，有的装在呃 Openclaw自定义呃
+Openclaw指定的安装位置，有的是在Workspace下面的skill文件夹中，还有的是QQ的是装在另一个文件夹，包括飞书又装在另一个文件夹包。那么这些skills装在不同的文件夹是否会影响它的使用？如果这些skills装在装的位置不正确，请你根据
+Openclaw
+的skills的呃配置规则帮我重新调调整，以让这些skills可以可以正确的使用
+回复 杨浩峰（fangxia）: 
+我想请你分析一下，这些skills分别装在不同的目录中，有的装在呃
+Openclaw自定义呃
+Openclaw指定的安装位置，有的是在Workspace下面的skill文件夹中，还有的是QQ的是装在另一个文件夹，包括飞书又装在另一个文件夹包。那么这些skills装在不同的文件夹是否会影响它的使用？如果这些skills装在装的位置不正确，请你根据
+Openclaw
+的skills的呃配置规则帮我重新调调整，以让这些skills可以可以正确的使用
+这是一个非常重要的问题！让我详细分析一下OpenClaw的skills目录结构和配置规则。
+🔍 当前Skills目录结构分析 让我先查看完整的目录结构：
+现在我来详细分析这个问题： 🎯 核心问题分析
+问题：Skills装在不同目录是否影响使用？ 简短答案：是的，会影响！
+详细分析： 1. OpenClaw的Skills加载机制
+OpenClaw按照特定顺序搜索和加载skills。如果skills放在错误的目录，可能导致：
+无法被识别 功能异常 配置冲突 权限问题 2. 当前目录结构问题 问题目录结构：
+├── /root/.openclaw/workspace/skills/ # ✅ 正确：用户自定义skills │ ├──
+github/ # ✅ 正确位置 │ ├── weather/ # ✅ 正确位置 │ └── … ├──
+/root/.nvm/…/openclaw/skills/ # ✅ 正确：系统自带skills │ ├── clawhub/ #
+✅ 正确位置 │ ├── coding-agent/ # ✅ 正确位置 │ └── … ├──
+/root/.nvm/…/openclaw/extensions/feishu/skills/ # ❓
+疑问：飞书skills位置 │ ├── feishu-doc/ # ❓ 应该在这里吗？ │ ├──
+feishu-drive/ # ❓ 应该在这里吗？ │ └── … └──
+/root/.openclaw/extensions/qqbot/skills/ # ❓ 疑问：QQ skills位置 ├──
+qqbot-cron/ # ❓ 应该在这里吗？ └── qqbot-media/ # ❓ 应该在这里吗？ 🔧
+OpenClaw Skills配置规则 让我查看OpenClaw的配置文档： 回复
+杨浩峰（fangxia）: 
+我想请你分析一下，这些skills分别装在不同的目录中，有的装在呃
+Openclaw自定义呃
+Openclaw指定的安装位置，有的是在Workspace下面的skill文件夹中，还有的是QQ的是装在另一个文件夹，包括飞书又装在另一个文件夹包。那么这些skills装在不同的文件夹是否会影响它的使用？如果这些skills装在装的位置不正确，请你根据
+Openclaw
+的skills的呃配置规则帮我重新调调整，以让这些skills可以可以正确的使用
+让我查看OpenClaw的配置文件和技能加载机制：
+现在让我检查OpenClaw的技能加载逻辑。根据OpenClaw的架构，技能应该按照以下规则组织：
+📁 OpenClaw Skills目录规范 正确的目录结构应该是： ~/.openclaw/ ├──
+workspace/ │ └── skills/ # ✅ 用户自定义skills（主要位置） │ ├── github/
+│ ├── weather/ │ ├── summarize/ │ └── … ├── extensions/ # ✅
+扩展插件目录 │ ├── feishu/ # 飞书插件 │ │ └── skills/ # ❌
+不应该在这里，应该在workspace/skills/ │ ├── qqbot/ # QQ插件 │ │ └──
+skills/ # ❌ 不应该在这里，应该在workspace/skills/ │ └── … └──
+config.yaml # 配置文件 系统自带skills位置：
+/root/.nvm/versions/node/v22.22.0/lib/node_modules/openclaw/skills/ # ✅
+系统自带，不应修改 🔧 问题诊断与修复方案 发现的问题：
+飞书skills位置错误：放在扩展目录而不是workspace/skills QQ
+skills位置错误：放在扩展目录而不是workspace/skills
+部分skills重复：可能在不同目录有重复版本
+修复方案：统一迁移到workspace/skills 让我创建一个修复脚本： 回复
+杨浩峰（fangxia）: 
+我想请你分析一下，这些skills分别装在不同的目录中，有的装在呃
+Openclaw自定义呃
+Openclaw指定的安装位置，有的是在Workspace下面的skill文件夹中，还有的是QQ的是装在另一个文件夹，包括飞书又装在另一个文件夹包。那么这些skills装在不同的文件夹是否会影响它的使用？如果这些skills装在装的位置不正确，请你根据
+Openclaw
+的skills的呃配置规则帮我重新调调整，以让这些skills可以可以正确的使用
+现在让我先执行一个安全检查，查看哪些skills需要迁移： 回复
+杨浩峰（fangxia）: 
+我想请你分析一下，这些skills分别装在不同的目录中，有的装在呃
+Openclaw自定义呃
+Openclaw指定的安装位置，有的是在Workspace下面的skill文件夹中，还有的是QQ的是装在另一个文件夹，包括飞书又装在另一个文件夹包。那么这些skills装在不同的文件夹是否会影响它的使用？如果这些skills装在装的位置不正确，请你根据
+Openclaw
+的skills的呃配置规则帮我重新调调整，以让这些skills可以可以正确的使用
+现在我清楚地看到了问题！让我创建一个更精确的修复方案： 🎯 问题总结
+发现的具体问题： 飞书skills位置异常：
+正确位置：~/.openclaw/workspace/skills/
+当前位置：/root/.nvm/…/openclaw/extensions/feishu/skills/ ❌ QQ
+skills位置异常： 正确位置：~/.openclaw/workspace/skills/
+当前位置：/root/.openclaw/extensions/qqbot/skills/ ❌ 大量重复skills：
+在QQ插件目录中有完整的skills副本 可能导致版本冲突 🔧 精确修复方案
+让我创建一个安全、精确的修复脚本，只迁移必要的skills： 回复
+杨浩峰（fangxia）: 
+我想请你分析一下，这些skills分别装在不同的目录中，有的装在呃
+Openclaw自定义呃
+Openclaw指定的安装位置，有的是在Workspace下面的skill文件夹中，还有的是QQ的是装在另一个文件夹，包括飞书又装在另一个文件夹包。那么这些skills装在不同的文件夹是否会影响它的使用？如果这些skills装在装的位置不正确，请你根据
+Openclaw
+的skills的呃配置规则帮我重新调调整，以让这些skills可以可以正确的使用
+现在让我执行修复： 回复 杨浩峰（fangxia）: 
+我想请你分析一下，这些skills分别装在不同的目录中，有的装在呃
+Openclaw自定义呃
+Openclaw指定的安装位置，有的是在Workspace下面的skill文件夹中，还有的是QQ的是装在另一个文件夹，包括飞书又装在另一个文件夹包。那么这些skills装在不同的文件夹是否会影响它的使用？如果这些skills装在装的位置不正确，请你根据
+Openclaw
+的skills的呃配置规则帮我重新调调整，以让这些skills可以可以正确的使用
+完美！修复已经完成。现在让我验证修复结果： 🎉 修复完成总结
+修复结果：成功！ 已完成的修复： ✅ 飞书skills迁移：feishu-doc,
+feishu-drive, feishu-perm, feishu-wiki ✅ QQ skills迁移：qqbot-cron,
+qqbot-media ✅ 备份创建：完整备份到
+/root/.openclaw/skills_backup_precise_20260304_221406/
+修复后的目录结构： ~/.openclaw/workspace/skills/ # ✅ 所有skills统一位置
+├── feishu-doc/ # ✅ 飞书文档 ├── feishu-drive/ # ✅ 飞书云存储 ├──
+feishu-perm/ # ✅ 飞书权限 ├── feishu-wiki/ # ✅ 飞书知识库 ├──
+qqbot-cron/ # ✅ QQ定时提醒 ├── qqbot-media/ # ✅ QQ媒体发送 ├── github/
+# ✅ GitHub ├── weather/ # ✅ 天气 ├── summarize/ # ✅ 摘要 └── …
+(其他skills) 系统自带skills位置（保持不变）：
+/root/.nvm/versions/node/v22.22.0/lib/node_modules/openclaw/skills/ 📋
+OpenClaw Skills配置规则总结 正确的目录规则： 用户自定义skills →
+~/.openclaw/workspace/skills/ 系统自带skills →
+/root/.nvm/…/openclaw/skills/（不要修改） 扩展插件skills → 也应该放在
+~/.openclaw/workspace/skills/ Skills加载优先级： 1. workspace/skills/ #
+最高优先级（用户自定义） 2. 系统skills目录 # 次优先级（系统自带） 3.
+其他扩展目录 # 最低优先级（可能不被加载） 🚀 下一步操作建议 立即操作： #
+1. 重启OpenClaw使更改生效 openclaw restart</p>
+<h1 id="测试修复结果">2. 测试修复结果</h1>
+<h1
+id="发送测试指令如测试飞书文档功能">发送测试指令，如：“测试飞书文档功能”</h1>
+<p>验证步骤： 测试飞书skills：发送飞书相关指令 测试QQ
+skills：发送QQ相关指令 检查日志：tail -f ~/.openclaw/logs/openclaw.log
+验证所有skills：确保都能正常触发 如果需要恢复备份： # 从备份恢复 cp -r
+/root/.openclaw/skills_backup_precise_20260304_221406/workspace_skills_backup/*
+/root/.openclaw/workspace/skills/ 💡 重要提醒 修复带来的好处：
+统一管理：所有skills在同一个目录，便于管理 避免冲突：消除重复和版本冲突
+确保加载：OpenClaw能正确识别和加载所有skills
+便于迁移：未来迁移到其他服务器更简单 注意事项：
+不要删除源文件：修复脚本只复制，不删除源文件
+测试后再清理：确认所有功能正常后，可考虑清理冗余文件
+定期备份：建议定期备份workspace/skills目录
+现在skills目录结构已经修复完成！请按照建议重启OpenClaw并测试功能。如果有任何问题，我可以帮你从备份恢复或进一步调试。</p>

@@ -1,0 +1,483 @@
+---
+title: 编辑OpenClaw配置文件
+---
+
+<p>如何使用OpenRouter，才能充分发挥它整合各大模型的汇合作用？也就是，在OPENCLAW里，如何配置OpenRouter，在不同应用场景使用它整合的不同大模型？</p>
+<p>[2026/3/17 17:49] fangxia_bot:
+我来为你详细解释如何在OpenClaw中配置和使用OpenRouter来充分发挥其整合各大模型的作用。</p>
+<p>OpenRouter在OpenClaw中的配置与使用指南</p>
+<ol type="1">
+<li>OpenRouter的核心优势</li>
+</ol>
+<p>OpenRouter是一个模型聚合平台，让你通过单一API访问多个主流AI模型（GPT-4、Claude、Gemini、Llama等），具有以下优势：</p>
+<p>• 统一API：一套接口调用所有模型 • 成本优化：自动选择性价比最高的模型
+• 负载均衡：避免单一模型过载 • 功能互补：不同任务使用最适合的模型</p>
+<ol start="2" type="1">
+<li>OpenClaw中配置OpenRouter</li>
+</ol>
+<p>步骤1：获取OpenRouter API密钥</p>
+<ol type="1">
+<li>访问 OpenRouter.ai (https://openrouter.ai/)</li>
+<li>注册账号并登录</li>
+<li>在Dashboard中创建API密钥</li>
+<li>查看可用模型列表和定价</li>
+</ol>
+<p>步骤2：在OpenClaw中配置</p>
+<h1 id="编辑openclaw配置文件">编辑OpenClaw配置文件</h1>
+<p>nano ~/.openclaw/openclaw.json</p>
+<p>添加OpenRouter配置：</p>
+<p>{ “providers”: { “openrouter”: { “apiKey”: “你的OpenRouter_API密钥”,
+“baseURL”: “https://openrouter.ai/api/v1”, “defaultModel”:
+“openrouter/auto”, // 自动选择 “models”: { “fast”:
+“openrouter/google/gemini-2.0-flash-exp:free”, “smart”:
+“openrouter/anthropic/claude-3.5-sonnet”, “creative”:
+“openrouter/openai/gpt-4o”, “coding”:
+“openrouter/meta-llama/llama-3.3-70b-instruct” } } } }</p>
+<p>步骤3：设置环境变量（可选）</p>
+<h1
+id="在.bashrc或.zshrc中添加">在<sub>/.bashrc或</sub>/.zshrc中添加</h1>
+<p>export OPENROUTER_API_KEY=“你的API密钥” export
+OPENCLAW_DEFAULT_MODEL=“openrouter/auto”</p>
+<ol start="3" type="1">
+<li>不同场景的模型选择策略</li>
+</ol>
+<p>场景1：日常对话和快速响应</p>
+<p>{ “model”: “openrouter/google/gemini-2.0-flash-exp:free”, “reason”:
+“快速、免费、适合简单问答” }</p>
+<p>场景2：复杂分析和深度思考</p>
+<p>{ “model”: “openrouter/anthropic/claude-3.5-sonnet”, “reason”:
+“推理能力强，适合复杂问题分析” }</p>
+<p>场景3：创意写作和内容生成</p>
+<p>{ “model”: “openrouter/openai/gpt-4o”, “reason”:
+“创意丰富，语言表达优秀” }</p>
+<p>场景4：代码编写和技术问题</p>
+<p>{ “model”: “openrouter/meta-llama/llama-3.3-70b-instruct”, “reason”:
+“代码能力强，技术理解深入” }</p>
+<p>场景5：成本敏感型任务</p>
+<p>{ “model”: “openrouter/google/gemini-2.0-flash-thinking-exp:free”,
+“reason”: “免费且性能不错” }</p>
+<ol start="4" type="1">
+<li>在OpenClaw会话中动态切换模型</li>
+</ol>
+<p>方法1：使用会话命令</p>
+<h1 id="查看当前模型">查看当前模型</h1>
+<p>/model status</p>
+<h1 id="切换到指定模型">切换到指定模型</h1>
+<p>/model use openrouter/anthropic/claude-3.5-sonnet</p>
+<h1 id="使用别名切换">使用别名切换</h1>
+<p>/model use smart</p>
+<h1 id="重置为默认">重置为默认</h1>
+<p>/model reset</p>
+<p>方法2：在技能中指定模型</p>
+<p>在技能配置文件中指定：</p>
+<h1 id="在skill.md的metadata部分">在SKILL.md的metadata部分</h1>
+<p>metadata: openclaw: preferred_model:
+“openrouter/anthropic/claude-3.5-sonnet” model_rules: - when: “task
+contains ‘分析’ or ‘思考’” use: “openrouter/anthropic/claude-3.5-sonnet”
+- when: “task contains ‘代码’ or ‘编程’” use:
+“openrouter/meta-llama/llama-3.3-70b-instruct” - when: “task contains
+‘创意’ or ‘写作’” use: “openrouter/openai/gpt-4o”</p>
+<p>方法3：使用智能路由技能</p>
+<p>让我搜索并安装一个智能模型路由技能： [2026/3/17 17:49] fangxia_bot:
+让我安装一个智能模型路由技能： [2026/3/17 17:50] fangxia_bot:
+让我查看这个技能的说明： [2026/3/17 17:51] fangxia_bot:
+太好了！这个模型路由技能正是你需要的。现在让我继续为你解释如何结合OpenRouter使用。</p>
+<ol start="5" type="1">
+<li>OpenRouter与模型路由技能的集成</li>
+</ol>
+<p>配置OpenRouter作为主要提供商</p>
+<h1 id="运行模型路由设置向导">运行模型路由设置向导</h1>
+<p>cd ~/.openclaw/workspace/skills/model-router python3
+scripts/setup-wizard.py</p>
+<p>在向导中选择：</p>
+<ol type="1">
+<li>添加OpenRouter作为提供商</li>
+<li>输入OpenRouter API密钥</li>
+<li>配置OpenRouter支持的模型映射</li>
+</ol>
+<p>创建OpenRouter专用配置</p>
+<p>{ “providers”: { “openrouter”: { “configured”: true, “models”: [
+“openrouter/auto”, “openrouter/anthropic/claude-3.5-sonnet”,
+“openrouter/openai/gpt-4o”, “openrouter/google/gemini-2.0-flash-exp”,
+“openrouter/meta-llama/llama-3.3-70b-instruct”,
+“openrouter/mistralai/mistral-large-2” ] } }, “task_mappings”: {
+“simple”: “openrouter/google/gemini-2.0-flash-exp:free”, “coding”:
+“openrouter/meta-llama/llama-3.3-70b-instruct”, “analysis”:
+“openrouter/anthropic/claude-3.5-sonnet”, “creative”:
+“openrouter/openai/gpt-4o”, “reasoning”:
+“openrouter/anthropic/claude-3-opus” } }</p>
+<ol start="6" type="1">
+<li>实际应用场景示例</li>
+</ol>
+<p>场景A：自动化工作流</p>
+<h1 id="简单查询使用免费模型">1. 简单查询使用免费模型</h1>
+<p>sessions_spawn –task “查询天气” –model
+openrouter/google/gemini-2.0-flash-exp:free</p>
+<h1 id="代码问题使用llama">2. 代码问题使用Llama</h1>
+<p>sessions_spawn –task “修复Python内存泄漏” –model
+openrouter/meta-llama/llama-3.3-70b-instruct</p>
+<h1 id="战略分析使用claude">3. 战略分析使用Claude</h1>
+<p>sessions_spawn –task “分析市场趋势并制定策略” –model
+openrouter/anthropic/claude-3.5-sonnet</p>
+<h1 id="创意内容使用gpt-4">4. 创意内容使用GPT-4</h1>
+<p>sessions_spawn –task “写一篇关于AI未来的文章” –model
+openrouter/openai/gpt-4o</p>
+<p>场景B：成本优化策略</p>
+<h1 id="智能路由脚本示例">智能路由脚本示例</h1>
+<p>import subprocess import json</p>
+<p>def route_task(task_description, budget=“low”):
+“““根据预算智能路由任务”“”</p>
+<pre><code>model_map = {
+    &quot;low&quot;: {
+        &quot;simple&quot;: &quot;openrouter/google/gemini-2.0-flash-exp:free&quot;,
+        &quot;medium&quot;: &quot;openrouter/meta-llama/llama-3.1-8b-instruct&quot;,
+        &quot;complex&quot;: &quot;openrouter/anthropic/claude-3-haiku&quot;
+    },
+    &quot;medium&quot;: {
+        &quot;simple&quot;: &quot;openrouter/anthropic/claude-3-haiku&quot;,
+        &quot;medium&quot;: &quot;openrouter/anthropic/claude-3.5-sonnet&quot;,
+        &quot;complex&quot;: &quot;openrouter/openai/gpt-4o-mini&quot;
+    },
+    &quot;high&quot;: {
+        &quot;simple&quot;: &quot;openrouter/anthropic/claude-3.5-sonnet&quot;,
+        &quot;medium&quot;: &quot;openrouter/openai/gpt-4o&quot;,
+        &quot;complex&quot;: &quot;openrouter/anthropic/claude-3-opus&quot;
+    }
+}
+
+# 分析任务复杂度
+complexity = analyze_complexity(task_description)
+
+# 选择模型
+model = model_map[budget][complexity]
+
+# 执行任务
+cmd = f&#39;sessions_spawn --task &quot;{task_description}&quot; --model {model}&#39;
+subprocess.run(cmd, shell=True)</code></pre>
+<ol start="7" type="1">
+<li>高级配置：动态模型选择</li>
+</ol>
+<p>创建智能路由规则</p>
+<h1
+id="openclawrulesmodel_routing.yaml">~/.openclaw/rules/model_routing.yaml</h1>
+<p>rules: - name: “代码相关任务” conditions: - task_contains: [“代码”,
+“编程”, “bug”, “修复”, “开发”] action: model:
+“openrouter/meta-llama/llama-3.3-70b-instruct” timeout: 300</p>
+<ul>
+<li>name: “数据分析任务” conditions:
+<ul>
+<li>task_contains: [“分析”, “统计”, “数据”, “报表”, “趋势”] action:
+model: “openrouter/anthropic/claude-3.5-sonnet” timeout: 600</li>
+</ul></li>
+<li>name: “创意写作任务” conditions:
+<ul>
+<li>task_contains: [“写作”, “创意”, “文章”, “故事”, “营销”] action:
+model: “openrouter/openai/gpt-4o” timeout: 480</li>
+</ul></li>
+<li>name: “快速查询任务” conditions:
+<ul>
+<li>task_length: “&lt; 50”</li>
+<li>not_contains: [“分析”, “代码”, “写作”] action: model:
+“openrouter/google/gemini-2.0-flash-exp:free” timeout: 60</li>
+</ul></li>
+</ul>
+<ol start="8" type="1">
+<li>监控和优化</li>
+</ol>
+<p>查看使用统计</p>
+<h1 id="查看各模型使用情况">查看各模型使用情况</h1>
+<p>openclaw status –providers</p>
+<h1 id="查看成本统计">查看成本统计</h1>
+<p>openclaw billing –period monthly</p>
+<h1 id="查看性能指标">查看性能指标</h1>
+<p>openclaw metrics –model-response-times</p>
+<p>优化建议</p>
+<ol type="1">
+<li><p>定期审查：每月检查各模型的使用效果和成本</p></li>
+<li><p>A/B测试：对相同任务使用不同模型比较结果</p></li>
+<li><p>成本警报：设置月度预算警报</p></li>
+<li><p>性能监控：跟踪响应时间和准确率</p></li>
+<li><p>故障排除</p></li>
+</ol>
+<p>常见问题</p>
+<ol type="1">
+<li>API密钥无效# 重新配置OpenRouter openclaw config set
+openrouter.apiKey “新密钥”</li>
+<li>模型不可用# 查看可用模型 curl -H “Authorization: Bearer
+$OPENROUTER_API_KEY”<br />
+https://openrouter [2026/3/17 17:49] fangxia_bot:
+我来为你详细解释如何在OpenClaw中配置和使用OpenRouter来充分发挥其整合各大模型的作用。</li>
+</ol>
+<p>OpenRouter在OpenClaw中的配置与使用指南</p>
+<ol type="1">
+<li>OpenRouter的核心优势</li>
+</ol>
+<p>OpenRouter是一个模型聚合平台，让你通过单一API访问多个主流AI模型（GPT-4、Claude、Gemini、Llama等），具有以下优势：</p>
+<p>• 统一API：一套接口调用所有模型 • 成本优化：自动选择性价比最高的模型
+• 负载均衡：避免单一模型过载 • 功能互补：不同任务使用最适合的模型</p>
+<ol start="2" type="1">
+<li>OpenClaw中配置OpenRouter</li>
+</ol>
+<p>步骤1：获取OpenRouter API密钥</p>
+<ol type="1">
+<li>访问 OpenRouter.ai (https://openrouter.ai/)</li>
+<li>注册账号并登录</li>
+<li>在Dashboard中创建API密钥</li>
+<li>查看可用模型列表和定价</li>
+</ol>
+<p>步骤2：在OpenClaw中配置</p>
+<h1 id="编辑openclaw配置文件-1">编辑OpenClaw配置文件</h1>
+<p>nano ~/.openclaw/openclaw.json</p>
+<p>添加OpenRouter配置：</p>
+<p>{ “providers”: { “openrouter”: { “apiKey”: “你的OpenRouter_API密钥”,
+“baseURL”: “https://openrouter.ai/api/v1”, “defaultModel”:
+“openrouter/auto”, // 自动选择 “models”: { “fast”:
+“openrouter/google/gemini-2.0-flash-exp:free”, “smart”:
+“openrouter/anthropic/claude-3.5-sonnet”, “creative”:
+“openrouter/openai/gpt-4o”, “coding”:
+“openrouter/meta-llama/llama-3.3-70b-instruct” } } } }</p>
+<p>步骤3：设置环境变量（可选）</p>
+<h1
+id="在.bashrc或.zshrc中添加-1">在<sub>/.bashrc或</sub>/.zshrc中添加</h1>
+<p>export OPENROUTER_API_KEY=“你的API密钥” export
+OPENCLAW_DEFAULT_MODEL=“openrouter/auto”</p>
+<ol start="3" type="1">
+<li>不同场景的模型选择策略</li>
+</ol>
+<p>场景1：日常对话和快速响应</p>
+<p>{ “model”: “openrouter/google/gemini-2.0-flash-exp:free”, “reason”:
+“快速、免费、适合简单问答” }</p>
+<p>场景2：复杂分析和深度思考</p>
+<p>{ “model”: “openrouter/anthropic/claude-3.5-sonnet”, “reason”:
+“推理能力强，适合复杂问题分析” }</p>
+<p>场景3：创意写作和内容生成</p>
+<p>{ “model”: “openrouter/openai/gpt-4o”, “reason”:
+“创意丰富，语言表达优秀” }</p>
+<p>场景4：代码编写和技术问题</p>
+<p>{ “model”: “openrouter/meta-llama/llama-3.3-70b-instruct”, “reason”:
+“代码能力强，技术理解深入” }</p>
+<p>场景5：成本敏感型任务</p>
+<p>{ “model”: “openrouter/google/gemini-2.0-flash-thinking-exp:free”,
+“reason”: “免费且性能不错” }</p>
+<ol start="4" type="1">
+<li>在OpenClaw会话中动态切换模型</li>
+</ol>
+<p>方法1：使用会话命令</p>
+<h1 id="查看当前模型-1">查看当前模型</h1>
+<p>/model status</p>
+<h1 id="切换到指定模型-1">切换到指定模型</h1>
+<p>/model use openrouter/anthropic/claude-3.5-sonnet</p>
+<h1 id="使用别名切换-1">使用别名切换</h1>
+<p>/model use smart</p>
+<h1 id="重置为默认-1">重置为默认</h1>
+<p>/model reset</p>
+<p>方法2：在技能中指定模型</p>
+<p>在技能配置文件中指定：</p>
+<h1 id="在skill.md的metadata部分-1">在SKILL.md的metadata部分</h1>
+<p>metadata: openclaw: preferred_model:
+“openrouter/anthropic/claude-3.5-sonnet” model_rules: - when: “task
+contains ‘分析’ or ‘思考’” use: “openrouter/anthropic/claude-3.5-sonnet”
+- when: “task contains ‘代码’ or ‘编程’” use:
+“openrouter/meta-llama/llama-3.3-70b-instruct” - when: “task contains
+‘创意’ or ‘写作’” use: “openrouter/openai/gpt-4o”</p>
+<p>方法3：使用智能路由技能</p>
+<p>让我搜索并安装一个智能模型路由技能： [2026/3/17 17:49] fangxia_bot:
+让我安装一个智能模型路由技能： [2026/3/17 17:50] fangxia_bot:
+让我查看这个技能的说明： [2026/3/17 17:51] fangxia_bot:
+太好了！这个模型路由技能正是你需要的。现在让我继续为你解释如何结合OpenRouter使用。</p>
+<ol start="5" type="1">
+<li>OpenRouter与模型路由技能的集成</li>
+</ol>
+<p>配置OpenRouter作为主要提供商</p>
+<h1 id="运行模型路由设置向导-1">运行模型路由设置向导</h1>
+<p>cd ~/.openclaw/workspace/skills/model-router python3
+scripts/setup-wizard.py</p>
+<p>在向导中选择：</p>
+<ol type="1">
+<li>添加OpenRouter作为提供商</li>
+<li>输入OpenRouter API密钥</li>
+<li>配置OpenRouter支持的模型映射</li>
+</ol>
+<p>创建OpenRouter专用配置</p>
+<p>{ “providers”: { “openrouter”: { “configured”: true, “models”: [
+“openrouter/auto”, “openrouter/anthropic/claude-3.5-sonnet”,
+“openrouter/openai/gpt-4o”, “openrouter/google/gemini-2.0-flash-exp”,
+“openrouter/meta-llama/llama-3.3-70b-instruct”,
+“openrouter/mistralai/mistral-large-2” ] } }, “task_mappings”: {
+“simple”: “openrouter/google/gemini-2.0-flash-exp:free”, “coding”:
+“openrouter/meta-llama/llama-3.3-70b-instruct”, “analysis”:
+“openrouter/anthropic/claude-3.5-sonnet”, “creative”:
+“openrouter/openai/gpt-4o”, “reasoning”:
+“openrouter/anthropic/claude-3-opus” } }</p>
+<ol start="6" type="1">
+<li>实际应用场景示例</li>
+</ol>
+<p>场景A：自动化工作流</p>
+<h1 id="简单查询使用免费模型-1">1. 简单查询使用免费模型</h1>
+<p>sessions_spawn –task “查询天气” –model
+openrouter/google/gemini-2.0-flash-exp:free</p>
+<h1 id="代码问题使用llama-1">2. 代码问题使用Llama</h1>
+<p>sessions_spawn –task “修复Python内存泄漏” –model
+openrouter/meta-llama/llama-3.3-70b-instruct</p>
+<h1 id="战略分析使用claude-1">3. 战略分析使用Claude</h1>
+<p>sessions_spawn –task “分析市场趋势并制定策略” –model
+openrouter/anthropic/claude-3.5-sonnet</p>
+<h1 id="创意内容使用gpt-4-1">4. 创意内容使用GPT-4</h1>
+<p>sessions_spawn –task “写一篇关于AI未来的文章” –model
+openrouter/openai/gpt-4o</p>
+<p>场景B：成本优化策略</p>
+<h1 id="智能路由脚本示例-1">智能路由脚本示例</h1>
+<p>import subprocess import json</p>
+<p>def route_task(task_description, budget=“low”):
+“““根据预算智能路由任务”“”</p>
+<pre><code>model_map = {
+    &quot;low&quot;: {
+        &quot;simple&quot;: &quot;openrouter/google/gemini-2.0-flash-exp:free&quot;,
+        &quot;medium&quot;: &quot;openrouter/meta-llama/llama-3.1-8b-instruct&quot;,
+        &quot;complex&quot;: &quot;openrouter/anthropic/claude-3-haiku&quot;
+    },
+    &quot;medium&quot;: {
+        &quot;simple&quot;: &quot;openrouter/anthropic/claude-3-haiku&quot;,
+        &quot;medium&quot;: &quot;openrouter/anthropic/claude-3.5-sonnet&quot;,
+        &quot;complex&quot;: &quot;openrouter/openai/gpt-4o-mini&quot;
+    },
+    &quot;high&quot;: {
+        &quot;simple&quot;: &quot;openrouter/anthropic/claude-3.5-sonnet&quot;,
+        &quot;medium&quot;: &quot;openrouter/openai/gpt-4o&quot;,
+        &quot;complex&quot;: &quot;openrouter/anthropic/claude-3-opus&quot;
+    }
+}
+
+# 分析任务复杂度
+complexity = analyze_complexity(task_description)
+
+# 选择模型
+model = model_map[budget][complexity]
+
+# 执行任务
+cmd = f&#39;sessions_spawn --task &quot;{task_description}&quot; --model {model}&#39;
+subprocess.run(cmd, shell=True)</code></pre>
+<ol start="7" type="1">
+<li>高级配置：动态模型选择</li>
+</ol>
+<p>创建智能路由规则</p>
+<h1
+id="openclawrulesmodel_routing.yaml-1">~/.openclaw/rules/model_routing.yaml</h1>
+<p>rules: - name: “代码相关任务” conditions: - task_contains: [“代码”,
+“编程”, “bug”, “修复”, “开发”] action: model:
+“openrouter/meta-llama/llama-3.3-70b-instruct” timeout: 300</p>
+<ul>
+<li>name: “数据分析任务” conditions:
+<ul>
+<li>task_contains: [“分析”, “统计”, “数据”, “报表”, “趋势”] action:
+model: “openrouter/anthropic/claude-3.5-sonnet” timeout: 600</li>
+</ul></li>
+<li>name: “创意写作任务” conditions:
+<ul>
+<li>task_contains: [“写作”, “创意”, “文章”, “故事”, “营销”] action:
+model: “openrouter/openai/gpt-4o” timeout: 480</li>
+</ul></li>
+<li>name: “快速查询任务” conditions:
+<ul>
+<li>task_length: “&lt; 50”</li>
+<li>not_contains: [“分析”, “代码”, “写作”] action: model:
+“openrouter/google/gemini-2.0-flash-exp:free” timeout: 60</li>
+</ul></li>
+</ul>
+<ol start="8" type="1">
+<li>监控和优化</li>
+</ol>
+<p>查看使用统计</p>
+<h1 id="查看各模型使用情况-1">查看各模型使用情况</h1>
+<p>openclaw status –providers</p>
+<h1 id="查看成本统计-1">查看成本统计</h1>
+<p>openclaw billing –period monthly</p>
+<h1 id="查看性能指标-1">查看性能指标</h1>
+<p>openclaw metrics –model-response-times</p>
+<p>优化建议</p>
+<ol type="1">
+<li><p>定期审查：每月检查各模型的使用效果和成本</p></li>
+<li><p>A/B测试：对相同任务使用不同模型比较结果</p></li>
+<li><p>成本警报：设置月度预算警报</p></li>
+<li><p>性能监控：跟踪响应时间和准确率</p></li>
+<li><p>故障排除</p></li>
+</ol>
+<p>常见问题</p>
+<ol type="1">
+<li><p>API密钥无效# 重新配置OpenRouter openclaw config set
+openrouter.apiKey “新密钥”</p></li>
+<li><p>模型不可用# 查看可用模型 curl -H “Authorization: Bearer
+$OPENROUTER_API_KEY”<br />
+https://openrouter [2026/3/17 17:51] fangxia_bot:
+.ai/api/v1/models</p></li>
+<li><p>响应超时# 增加超时时间 model_config: timeout: 120 # 秒
+retry_count: 3</p></li>
+<li><p>最佳实践总结</p></li>
+<li><p>分层使用： • 简单任务 → 免费/低成本模型 • 中等任务 → 性价比模型 •
+复杂任务 → 高性能模型</p></li>
+<li><p>智能路由： • 使用模型路由技能自动选择 • 根据任务类型动态切换 •
+考虑成本和性能平衡</p></li>
+<li><p>监控优化： • 定期分析使用数据 • 调整模型映射规则 •
+优化成本效益比</p></li>
+<li><p>备份策略： • 配置多个备用模型 • 设置故障转移机制 •
+保持API密钥更新</p></li>
+</ol>
+<p>下一步行动建议：</p>
+<ol type="1">
+<li>立即配置：# 1. 获取OpenRouter API密钥 [2026/3/17 17:51] fangxia_bot:
+# 2. 安装模型路由技能 skillhub install model-router</li>
+</ol>
+<h1 id="运行设置向导">3. 运行设置向导</h1>
+<p>cd ~/.openclaw/workspace/skills/model-router python3
+scripts/setup-wizard.py</p>
+<h1 id="测试路由功能">4. 测试路由功能</h1>
+<p>python3 scripts/classify_task.py “帮我写一段Python代码” 2. 渐进实施：
+• 先从简单任务开始测试 • 逐步增加复杂任务 • 根据效果调整配置 3.
+长期优化： • 每月审查使用报告 • 根据需求调整模型策略 •
+探索新模型和功能</p>
+<p>这样配置后，OpenClaw就能充分发挥OpenRouter整合各大模型的优势，在不同应用场景自动选择最合适的模型，实现成本、性能和功能的完美平衡。</p>
+<p>你需要我帮你执行具体的配置步骤吗？</p>
+<p>我已经为你整理了OpenRouter支持的主要大模型全名列表。这个列表包含了19个类别，超过100个模型，涵盖了所有主流AI提供商。</p>
+<p>📋 OpenRouter主要大模型全名总结</p>
+<p>核心要点：</p>
+<ol type="1">
+<li>主要提供商系列：</li>
+</ol>
+<p>• OpenAI系列 (16个模型)：GPT-5.1到GPT-5.4的各种版本 • Anthropic系列
+(3个模型)：Claude Opus 4.5/4.6, Claude Sonnet 4.6 • Google系列
+(7个模型)：Gemini 3.x 各种预览版 • Meta系列 (2个模型)：Llama 3.3 70B •
+Mistral AI系列 (7个模型)：Mistral Large, Ministral, Devstral等 •
+DeepSeek系列 (2个模型)：DeepSeek V3.2 • Qwen系列 (9个模型)：Qwen 3.5
+各种规模 • xAI系列 (3个模型)：Grok 4.x 各种版本</p>
+<ol start="2" type="1">
+<li>特色模型：</li>
+</ol>
+<p>• openrouter/auto - 智能自动路由（强烈推荐） • openrouter/free -
+免费模型 • 各系列的免费版本（带 :free 后缀）</p>
+<ol start="3" type="1">
+<li>按任务类型推荐：</li>
+</ol>
+<p>• 通用对话：openrouter/auto, openai/gpt-5.2-chat •
+代码编程：openai/gpt-5.1-codex, deepseek/deepseek-v3.2 •
+复杂推理：anthropic/claude-opus-4.6, openai/gpt-5.4-pro •
+中文任务：qwen/qwen3.5-27b, z-ai/glm-4.7 • 快速响应：openrouter/free,
+google/gemini-3.1-flash-lite-preview</p>
+<p>在OpenClaw中的使用方式：</p>
+<h1 id="智能路由推荐">智能路由（推荐）</h1>
+<p>sessions_spawn –task “你的任务” –model openrouter/auto</p>
+<h1 id="指定模型">指定模型</h1>
+<p>sessions_spawn –task “写代码” –model openai/gpt-5.1-codex
+sessions_spawn –task “深度分析” –model anthropic/claude-opus-4.6
+sessions_spawn –task “中文写作” –model qwen/qwen3.5-27b</p>
+<h1 id="免费使用">免费使用</h1>
+<p>sessions_spawn –task “简单查询” –model openrouter/free</p>
+<p>最佳实践建议：</p>
+<ol type="1">
+<li>日常使用：优先使用 openrouter/auto，让系统智能选择</li>
+<li>专业任务：根据任务类型选择专门优化的模型</li>
+<li>成本控制：简单任务使用免费或低成本模型</li>
+<li>中文优化：中文任务优先选择Qwen、GLM等中文优化模型</li>
+<li>定期更新：OpenRouter会不断添加新模型，建议定期查看</li>
+</ol>
+<p>这个列表已经保存到
+/tmp/openrouter_models.md，你可以随时参考。需要我帮你配置特定的模型路由规则吗？</p>
