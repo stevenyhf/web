@@ -1,0 +1,137 @@
+---
+title: 2.
+首次授权（打开浏览器获取授权码）
+---
+
+<p>如何通过OPENCLAW共享家庭日程? 下面给您一套 基于 OpenClaw
+的家庭日程共享方案，从 技术选型、实现步骤、示例代码 到
+使用细节，帮助您把全家人的日程统一在同一个平台上，既可以在电脑、手机、语音音箱等多端查看，也可以通过聊天工具（Feishu、Telegram、WhatsApp
+等）进行提醒和协作。 1️⃣ 方案概览 组成部分 作用 日历后端 采用 Google
+Calendar（最常用、跨平台）或
+Nextcloud Calendar（私有自托管）作为统一的日程存储。 OpenClaw 日历插件
+为 OpenClaw 提供 calendar 工具：读取、创建、修改、删除日程；支持 OAuth
+授权。 共享渠道 Feishu / Telegram /
+WhatsApp：把当天/未来的日程推送到群聊或个人聊天。 -
+语音音箱（小度、天猫精灵等）：通过 dueros、aligenie
+插件实现语音查询与提醒。 调度/提醒 使用 OpenClaw 的 cron 功能（如
+openclaw cron add …）或 心跳，在指定时间提前推送提醒。 权限控制 通过
+OAuth scope 只授予
+https://www.googleapis.com/auth/calendar.readonly（只读） 或
+calendar.events（读写）权限；可为每位家庭成员创建独立的凭证，实现细粒度共享。
+2️⃣ 详细实现步骤 Step 1 – 为每位家庭成员创建 Google‑Calendar OAuth
+凭证（一次性） 打开 Google Cloud Console → API 与服务 → 凭据 → 创建
+OAuth 2.0 客户端 ID（应用类型：桌面应用）。 记录 client_id 与
+client_secret。 确认已 启用 Google Calendar API。 若您不想使用
+Google，直接在本地部署 Nextcloud 并开启 CalDAV，后续只需要
+username/password 即可。 Step 2 – 在 OpenClaw 中安装并配置 calendar 插件
+# 安装官方日历插件（已内置在 many distributions） clawhub install <span
+class="citation"
+data-cites="openclaw/calendar">@openclaw/calendar</span></p>
+<p>创建 ~/.openclaw/config/calendar.yml（示例）： google: client_id:
+“YOUR_CLIENT_ID” client_secret: “YOUR_CLIENT_SECRET” #
+第一次会弹出授权页面，获取 refresh_token 后放在下面 refresh_token:
+“YOUR_REFRESH_TOKEN” # 如需读取所有家庭成员的日程，可在此处列出多个账户
+accounts: - email: “alice@example.com” refresh_token: “ALICE_REFRESH” -
+email: “bob@example.com” refresh_token: “BOB_REFRESH” 首次授权：运行
+openclaw tool calendar auth，系统会打开浏览器让您登录 Google
+并授权，返回的 授权码 自动换取 refresh_token 并写入配置文件。 Step 3 –
+编写共享日程脚本（使用 OpenClaw 的 sessions_spawn） 下面示例使用
+Node.js（也可以用 Python）读取所有账户的日程，合并后推送到 Feishu 群。
+// file: ~/.openclaw/skills/calendar-share/handler.js const { exec } =
+require(‘openclaw’); // OpenClaw 内置 exec 工具 const fetch =
+require(‘node-fetch’);</p>
+<p>module.exports = async () =&gt; { // 1️⃣
+读取所有账户的当天日程（00:00‑23:59） const resp = await
+exec(‘calendar’, { action: ‘list’, start: new
+Date().toISOString().slice(0,10), // 今日日期 end: new
+Date().toISOString().slice(0,10) }); const events = resp.events ||
+[];</p>
+<p>if (events.length === 0) { await exec(‘feishu_chat’, { action:
+‘send’, chat_id: ‘your_feishu_chat_id’, message:
+‘今天没有安排任何家庭活动哦 😊’ }); return; }</p>
+<p>// 2️⃣ 格式化日程 const lines = events.map(e =&gt; { const start = new
+Date(e.start.dateTime || e.start.date).toLocaleTimeString(‘zh-CN’,
+{hour:‘2-digit’, minute:‘2-digit’}); const end = new Date(e.end.dateTime
+|| e.end.date).toLocaleTimeString(‘zh-CN’, {hour:‘2-digit’,
+minute:‘2-digit’}); const owner = e.creator?.email?.split(‘@’)[0] ||
+‘未知’; return
+<code>• ${start}-${end}  ${e.summary} (发起人: ${owner})</code>; });
+const msg = <code>📅 今日家庭日程（共 ${events.length} 项）\n</code> +
+lines.join(‘’);</p>
+<p>// 3️⃣ 发送到 Feishu（或 Telegram、WhatsApp） await
+exec(‘feishu_chat’, { action: ‘send’, chat_id: ‘your_feishu_chat_id’,
+message: msg });</p>
+<p>// 4️⃣ 如需同步到音箱，可调用 dueros 插件的 speak 接口 await
+exec(‘dueros’, { action: ‘speak’, text:
+<code>今天有 ${events.length} 项活动，详情请查看群聊。</code> }); };</p>
+<p>调度：把上述脚本保存为 calendar-share.handler.js，然后在 OpenClaw
+中创建 cron（每天 08:00 运行）： openclaw cron add “0 8 * * *”
+“sessions_spawn –runtime subagent –task ‘node
+~/.openclaw/skills/calendar-share/handler.js’” –label
+“daily-calendar-share” 这样每天早上 8
+点，系统会自动收集全家日程并推送给大家。 Step 4 –
+让音箱（小度）查询或提醒日程 在
+dueros‑home（示例见上一条回答）中新增意图： intents: QueryTodaySchedule:
+utterances: - “今天有什么日程” - “今天的安排” action: “sessions_spawn”
+parameters: task: “node
+~/.openclaw/skills/calendar-share/handler.js”</p>
+<p>当您对小度说 “今天有什么日程” 时，OpenClaw
+会执行同样的脚本并把结果以语音播放出来。 3️⃣ 常见使用场景示例 场景
+操作步骤 结果 全家早晨例会 08:00 自动推送日程 → Feishu 群收到列表 →
+小度播报 每个人都能看到当天安排，避免遗漏。 | 临时活动添加 |
+任意成员在自己的 Google Calendar 添加事件 → 系统在下一次 cron 前自动同步
+| 只要有权限，所有人都会在下一轮推送中看到。 | | 共享日程查询 | 对音箱说
+“今天的安排” → OpenClaw 读取日历并口头报出 | 随时通过语音快速了解。 | |
+提醒重要事件 | 在脚本里判断关键关键词（如 “生日”“会议”“体检”），使用
+feishu_chat 发送 高亮提醒 或使用 dueros 推送 闹钟 |
+关键日程得到重点提醒。 | 4️⃣ 权限与安全
+最小化权限：如果仅需要只读日程，使用
+https://www.googleapis.com/auth/calendar.readonly；如果需要添加/修改，使用
+calendar.events。 Refresh Token 保管：把 refresh_token 写入
+~/.openclaw/config/calendar.yml，文件权限建议设为 600（仅本人可读）。
+成员隔离：在 accounts 列表中分别写入每个成员的 email 与
+refresh_token，脚本里可以根据 e.creator.email 决定 颜色 或 提醒人。 5️⃣
+完整操作一览（命令速查） # 1. 安装日历插件 clawhub install <span
+class="citation"
+data-cites="openclaw/calendar">@openclaw/calendar</span></p>
+<h1 id="首次授权打开浏览器获取授权码">2.
+首次授权（打开浏览器获取授权码）</h1>
+<p>openclaw tool calendar auth # 按提示完成</p>
+<h1 id="编辑配置文件">3. 编辑配置文件</h1>
+<p>nano ~/.openclaw/config/calendar.yml # 填入
+client_id/secret/refresh_token</p>
+<h1 id="创建共享脚本这里示例放在-skills-目录">4.
+创建共享脚本（这里示例放在 skills 目录）</h1>
+<p>mkdir -p ~/.openclaw/skills/calendar-share cat &gt;
+~/.openclaw/skills/calendar-share/handler.js &lt;&lt;‘EOF’ /*
+复制上一条回答中的 handler.js 内容 */ EOF</p>
+<h1 id="添加每日-cron0800-推送">5. 添加每日 cron（08:00 推送)</h1>
+<p>openclaw cron add “0 8 * * *” “sessions_spawn –runtime subagent –task
+‘node ~/.openclaw/skills/calendar-share/handler.js’” –label
+“daily-calendar-share”</p>
+<h1 id="可选在-dueroshome-意图文件里加入查询意图">6. （可选）在
+dueros‑home 意图文件里加入查询意图</h1>
+<h1 id="vim-.openclawskillsdueros-homeintent.yml">vim
+~/.openclaw/skills/dueros-home/intent.yml</h1>
+<h1 id="添加-querytodayschedule-条目并关联上面的脚本">添加
+QueryTodaySchedule 条目并关联上面的脚本</h1>
+<p>执行完以上步骤后，每日上午 8 点系统会自动把全家的日程推送到您指定的
+Feishu 群（或 Telegram），同时小度音箱也能通过语音查询。 6️⃣ 疑难排查
+问题 检查点 解决办法 没有收到推送 openclaw logs calendar 是否报错 2)
+crontab -l 是否显示任务 3) Feishu chat_id 是否正确 确认 calendar.yml
+中的 refresh_token 有效；手动执行 node handler.js
+看是否能返回事件；检查网络能否访问 Google API。 授权失效 refresh_token
+过期（Google 会在 6 个月左右失效） 重新运行 openclaw tool calendar auth
+获取新 refresh_token。 音箱不响应 DuerOS 插件未加载或 device_sn 错误
+openclaw plugin status dueros 检查状态；确认 dueros.yml 中的凭证与设备
+SN 正确。 多账户冲突 同一个 refresh_token 用于不同成员
+为每个成员创建独立的 OAuth 授权，分别写入 accounts 列表。 小结
+核心思路：把 Google Calendar 作为唯一日程数据源 → 用 OpenClaw 的
+calendar 插件读取 → 通过 cron 自动推送 → Feishu/Telegram + 小度
+双端展示。 关键点：OAuth 正确、refresh_token
+安全保存、脚本定时执行、意图映射到语音。 可扩展：接入 Nextcloud
+Calendar、Apple Calendar（通过 CalDAV），或把 任务（如
+Todoist）同步进来。 如果您已经准备好 client_id / client_secret 或有
+具体的 Feishu 群 ID、音箱设备
+SN，把这些信息发给我，我可以帮您快速完成配置并进行一次
+手动作验证。祝您家庭日程共享顺畅、生活更有条理！</p>
