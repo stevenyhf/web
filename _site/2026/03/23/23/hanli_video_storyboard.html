@@ -1,0 +1,383 @@
+---
+title: 韩立修仙历程 - 20秒视频分镜
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>韩立修仙历程 - 20秒视频分镜</title>
+    <style>
+        :root { color-scheme: dark; }
+        body { 
+            margin: 0; 
+            padding: 20px; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #334155;
+        }
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            margin-bottom: 20px;
+        }
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .scene {
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid #475569;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .scene:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-color: #60a5fa;
+        }
+        .scene-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .time-badge {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            min-width: 100px;
+            text-align: center;
+        }
+        .scene-title {
+            font-size: 1.5rem;
+            color: #f1f5f9;
+            margin: 0;
+        }
+        .scene-content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+        .image-container {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+        .image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+        .image-container:hover img {
+            transform: scale(1.03);
+        }
+        .scene-details {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .detail-item {
+            background: rgba(51, 65, 85, 0.5);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #60a5fa;
+        }
+        .detail-label {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-bottom: 5px;
+        }
+        .detail-value {
+            font-size: 1rem;
+            color: #f1f5f9;
+        }
+        .ai-prompt {
+            background: rgba(30, 41, 59, 0.9);
+            border: 1px solid #475569;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #86efac;
+        }
+        .video-script {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 16px;
+            padding: 30px;
+            margin-top: 40px;
+            border: 2px solid #475569;
+        }
+        .script-title {
+            font-size: 1.8rem;
+            color: #f1f5f9;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .script-content {
+            display: grid;
+            grid-template-columns: 100px 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+        .time-column {
+            font-weight: bold;
+            color: #60a5fa;
+            font-size: 1.1rem;
+        }
+        .action-column {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #334155;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        @media (max-width: 768px) {
+            .scene-content {
+                grid-template-columns: 1fr;
+            }
+            .script-content {
+                grid-template-columns: 1fr;
+            }
+            .time-column {
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>《凡人修仙传》韩立修仙历程</h1>
+            <div class="subtitle">20秒AI视频生成 - 分镜脚本与视觉参考</div>
+        </header>
+
+        <div class="timeline">
+            <!-- 场景1 -->
+            <div class="scene">
+                <div class="scene-header">
+                    <div class="time-badge">0-4秒</div>
+                    <h2 class="scene-title">出身贫寒，偶得小瓶</h2>
+                </div>
+                <div class="scene-content">
+                    <div class="image-container">
+                        <img src="tmp/openai-image-gen-2026-02-27-07-26-09/001-chinese-cultivation-animation-style-youn.png" alt="韩立偶得神秘小瓶">
+                    </div>
+                    <div class="scene-details">
+                        <div class="description">
+                            少年韩立在破旧小屋中，手持神秘绿色小瓶，瓶身散发微弱光芒。背景简陋，展现贫寒出身。
+                        </div>
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <div class="detail-label">画面风格</div>
+                                <div class="detail-value">水墨动画风格</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">情感基调</div>
+                                <div class="detail-value">神秘、希望</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">关键元素</div>
+                                <div class="detail-value">绿色小瓶、破旧小屋</div>
+                            </div>
+                        </div>
+                        <div class="ai-prompt">
+                            Chinese cultivation animation style, young Han Li in a dilapidated hut holding a glowing green mysterious bottle, poor background, ink painting style, detailed facial expression
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 场景2 -->
+            <div class="scene">
+                <div class="scene-header">
+                    <div class="time-badge">5-10秒</div>
+                    <h2 class="scene-title">踏上修仙之路</h2>
+                </div>
+                <div class="scene-content">
+                    <div class="image-container">
+                        <img src="tmp/openai-image-gen-2026-02-27-07-26-39/001-chinese-cultivation-animation-han-li-med.png" alt="韩立修炼">
+                    </div>
+                    <div class="scene-details">
+                        <div class="description">
+                            韩立在山洞中修炼，灵气环绕周身，从炼气期向筑基期过渡。展现修为提升的过程。
+                        </div>
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <div class="detail-label">画面风格</div>
+                                <div class="detail-value">灵气特效、动态光效</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">情感基调</div>
+                                <div class="detail-value">专注、成长</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">关键元素</div>
+                                <div class="detail-value">灵气漩涡、修炼姿势</div>
+                            </div>
+                        </div>
+                        <div class="ai-prompt">
+                            Chinese cultivation animation, Han Li meditating in a mountain cave, spiritual energy swirling around him, transitioning from Qi Refining to Foundation Building stage, ink painting style with glowing effects
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 场景3 -->
+            <div class="scene">
+                <div class="scene-header">
+                    <div class="time-badge">11-15秒</div>
+                    <h2 class="scene-title">历经磨难成长</h2>
+                </div>
+                <div class="scene-content">
+                    <div class="image-container">
+                        <img src="tmp/openai-image-gen-2026-02-27-07-27-07/001-chinese-cultivation-scene-han-li-defendi.png" alt="宗门大战">
+                    </div>
+                    <div class="scene-details">
+                        <div class="description">
+                            韩立参与宗门大战，施展法术防御，飞剑与法宝在空中交锋，展现正魔大战的激烈场面。
+                        </div>
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <div class="detail-label">画面风格</div>
+                                <div class="detail-value">动态战斗、法术特效</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">情感基调</div>
+                                <div class="detail-value">激烈、紧张</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">关键元素</div>
+                                <div class="detail-value">飞剑、法术盾、战场</div>
+                            </div>
+                        </div>
+                        <div class="ai-prompt">
+                            Chinese cultivation scene, Han Li defending his sect, magical energy shields, flying artifacts, spiritual pressure, ink painting style, dramatic but peaceful confrontation
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 场景4 -->
+            <div class="scene">
+                <div class="scene-header">
+                    <div class="time-badge">16-20秒</div>
+                    <h2 class="scene-title">成就大道传奇</h2>
+                </div>
+                <div class="scene-content">
+                    <div class="image-container">
+                        <img src="tmp/openai-image-gen-2026-02-27-07-27-28/001-chinese-cultivation-ascension-scene-han-.png" alt="飞升灵界">
+                    </div>
+                    <div class="scene-details">
+                        <div class="description">
+                            韩立成为元婴大能，在金光中飞升灵界，仙气缭绕，天门开启，成就大道传奇。
+                        </div>
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <div class="detail-label">画面风格</div>
+                                <div class="detail-value">神圣、辉煌、仙气</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">情感基调</div>
+                                <div class="detail-value">庄严、成就、圆满</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">关键元素</div>
+                                <div class="detail-value">金光、天门、仙气</div>
+                            </div>
+                        </div>
+                        <div class="ai-prompt">
+                            Chinese cultivation ascension scene, Han Li as a Nascent Soul cultivator ascending to the Spirit Realm, golden light shining, immortal aura swirling, celestial gateway, ink painting style with ethereal beauty
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="video-script">
+            <h2 class="script-title">20秒完整视频脚本</h2>
+            <div class="script-content">
+                <div class="time-column">0-4秒</div>
+                <div class="action-column">
+                    <strong>画面：</strong>少年韩立在破旧小屋中，手持散发绿光的神秘小瓶<br>
+                    <strong>旁白：</strong>"贫寒少年韩立，偶得神秘小瓶"<br>
+                    <strong>音效：</strong>神秘悠扬的音乐，小瓶微弱嗡鸣声
+                </div>
+                
+                <div class="time-column">5-10秒</div>
+                <div class="action-column">
+                    <strong>画面：</strong>韩立在山洞修炼，灵气环绕，修为提升<br>
+                    <strong>旁白：</strong>"踏上修仙之路，从炼气小修开始"<br>
+                    <strong>音效：</strong>灵气流动声，境界突破的音效
+                </div>
+                
+                <div class="time-column">11-15秒</div>
+                <div class="action-column">
+                    <strong>画面：</strong>宗门大战，飞剑交锋，法术碰撞<br>
+                    <strong>旁白：</strong>"历经宗门争斗、正魔大战"<br>
+                    <strong>音效：</strong>战斗音效，剑鸣声，法术爆炸声
+                </div>
+                
+                <div class="time-column">16-20秒</div>
+                <div class="action-column">
+                    <strong>画面：</strong>韩立飞升灵界，金光闪耀，天门开启<br>
+                    <strong>旁白：</strong>"飞升灵界，成就大道，成为人界传奇"<br>
+                    <strong>音效：</strong>庄严仙乐，金光闪耀声，圆满结束音
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>生成时间：2026年2月27日 | 使用OpenAI DALL-E 3生成图像</p>
+            <p>提示：这些图片可以作为视频分镜参考，使用AI视频生成工具时参考对应的提示词</p>
+        </footer>
+    </div>
+</body>
+</html>

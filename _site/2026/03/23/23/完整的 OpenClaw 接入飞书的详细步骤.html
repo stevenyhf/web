@@ -1,0 +1,219 @@
+---
+title: 如果飞书扩展未安装，需要安装
+---
+
+<p>完整的 OpenClaw 接入飞书的详细步骤：</p>
+<p>OpenClaw 接入飞书详细指南</p>
+<p>一、准备工作</p>
+<p>1.1 飞书开发者账号准备</p>
+<ol type="1">
+<li>注册飞书开放平台账号 • 访问 飞书开放平台 (https://open.feishu.cn/) •
+使用企业管理员账号登录</li>
+<li>创建企业自建应用 • 进入”开发者后台” • 点击”创建企业自建应用” •
+填写应用信息： • 应用名称：OpenClaw AI Assistant • 应用描述：AI智能助手
+• 应用图标：可选</li>
+</ol>
+<p>1.2 获取必要的凭证</p>
+<p>需要获取以下凭证：</p>
+<p>• App ID：应用唯一标识 • App Secret：应用密钥 • Encryption
+Key：事件加密密钥（可选） • Verification Token：验证令牌（可选）</p>
+<p>二、飞书应用配置</p>
+<p>2.1 权限配置</p>
+<p>在应用配置页面，添加以下权限：</p>
+<p>必选权限：</p>
+<p>• 获取用户 user_id：contact:user.id:readonly •
+获取用户基本信息：contact:user.base:readonly •
+获取用户邮箱：contact:user.email:readonly •
+获取用户手机号：contact:user.phone:readonly •
+获取用户所在部门信息：contact:user.department:readonly •
+获取部门信息：contact:department.base:readonly •
+获取部门用户列表：contact:department.user:readonly •
+获取部门列表：contact:department.list:readonly •
+获取自定义机器人消息：im:message • 发送消息：im:message:send_as_bot •
+接收消息：im:message:receive • 上传图片：im:image •
+获取群组信息：im:chat:readonly •
+获取与发送单聊、群组消息：im:message:readonly</p>
+<p>文档相关权限（如果需要）：</p>
+<p>• 云文档读权限：drive:drive:readonly • 云文档写权限：drive:drive •
+知识库读权限：wiki:wiki:readonly • 知识库写权限：wiki:wiki •
+多维表格读权限：bitable:record:readonly •
+多维表格写权限：bitable:record</p>
+<p>2.2 事件订阅配置</p>
+<ol type="1">
+<li>启用事件订阅</li>
+<li>添加事件： • im.message.receive_v1（接收消息） • 其他需要的事件</li>
+<li>配置请求地址：https://你的域名或IP:端口/feishu/webhook 或使用
+OpenClaw Gateway 地址</li>
+</ol>
+<p>2.3 安全设置</p>
+<ol type="1">
+<li>启用消息卡片请求网址校验</li>
+<li>配置加密密钥（如果需要）</li>
+</ol>
+<p>三、OpenClaw 配置</p>
+<p>3.1 安装飞书扩展（如果未安装）</p>
+<h1 id="如果飞书扩展未安装需要安装">如果飞书扩展未安装，需要安装</h1>
+<p>npm install <span class="citation"
+data-cites="openclaw/feishu">@openclaw/feishu</span></p>
+<p>3.2 配置 OpenClaw</p>
+<p>方法一：使用配置向导</p>
+<h1 id="运行配置向导">运行配置向导</h1>
+<p>openclaw configure –section channels</p>
+<h1 id="选择-feishu-进行配置">选择 Feishu 进行配置</h1>
+<h1 id="输入以下信息">输入以下信息：</h1>
+<h1 id="app-id">- App ID</h1>
+<h1 id="app-secret">- App Secret</h1>
+<h1 id="encryption-key如有">- Encryption Key（如有）</h1>
+<h1 id="verification-token如有">- Verification Token（如有）</h1>
+<p>方法二：手动编辑配置文件</p>
+<p>编辑 ~/.openclaw/config.yaml：</p>
+<p>workspace: ~/.openclaw/workspace model: deepseek/deepseek-chat</p>
+<p>gateway: mode: local port: 18789 bind: 0.0.0.0 # 如果需要外部访问</p>
+<p>channels: feishu: enabled: true app_id: “你的App ID” app_secret:
+“你的App Secret” encrypt_key: “你的Encryption Key” # 可选
+verification_token: “你的Verification Token” # 可选 # 其他配置项…</p>
+<p>3.3 启动 Gateway</p>
+<h1 id="重启-gateway-服务">重启 Gateway 服务</h1>
+<p>openclaw gateway restart</p>
+<h1 id="查看-gateway-状态">查看 Gateway 状态</h1>
+<p>openclaw gateway status</p>
+<p>四、网络配置</p>
+<p>4.1 本地开发环境</p>
+<p>如果需要公网访问，可以使用：</p>
+<p>选项一：Ngrok（推荐用于测试）</p>
+<h1 id="安装-ngrok">安装 ngrok</h1>
+<p>ngrok http 18789</p>
+<h1 id="将生成的-https-url-配置到飞书事件订阅">将生成的 https URL
+配置到飞书事件订阅</h1>
+<p>选项二：Cloudflare Tunnel</p>
+<h1 id="安装-cloudflared">安装 cloudflared</h1>
+<p>cloudflared tunnel –url http://localhost:18789</p>
+<p>选项三：服务器部署</p>
+<p>如果部署在服务器上：</p>
+<ol type="1">
+<li>确保防火墙开放 18789 端口</li>
+<li>配置域名解析</li>
+<li>配置 SSL 证书（HTTPS）</li>
+</ol>
+<p>4.2 端口转发配置</p>
+<h1
+id="如果需要外部访问修改绑定地址">如果需要外部访问，修改绑定地址</h1>
+<h1 id="在-config.yaml-中">在 config.yaml 中：</h1>
+<p>gateway: bind: 0.0.0.0 # 允许所有IP访问 port: 18789</p>
+<p>五、测试连接</p>
+<p>5.1 验证配置</p>
+<h1 id="检查飞书通道状态">检查飞书通道状态</h1>
+<p>openclaw channels list</p>
+<h1 id="应该显示feishu-default-configured-enabled">应该显示：Feishu
+default: configured, enabled</h1>
+<p>5.2 飞书应用发布</p>
+<ol type="1">
+<li>在飞书开放平台提交应用版本</li>
+<li>申请发布</li>
+<li>企业管理员审核通过</li>
+</ol>
+<p>5.3 测试消息</p>
+<ol type="1">
+<li>在飞书中找到你的应用</li>
+<li>发送测试消息</li>
+<li>检查 OpenClaw 是否收到并回复</li>
+</ol>
+<p>六、高级配置</p>
+<p>6.1 多租户配置</p>
+<p>如果需要支持多个飞书租户：</p>
+<p>channels: feishu: enabled: true tenants: - tenant_key: “tenant1”
+app_id: “app_id_1” app_secret: “app_secret_1” - tenant_key: “tenant2”
+app_id: “app_id_2” app_secret: “app_secret_2”</p>
+<p>6.2 自定义消息处理器</p>
+<p>创建自定义处理器：</p>
+<p>// 在扩展中创建自定义处理器 module.exports = { name: ‘feishu-custom’,
+async onMessage(message, context) { // 自定义处理逻辑 if
+(message.text.includes(‘特定关键词’)) { return { text: ‘自定义回复’ }; }
+// 默认处理 return null; } };</p>
+<p>6.3 飞书工具使用</p>
+<p>OpenClaw 已经集成了飞书工具，可以直接使用：</p>
+<h1 id="在对话中可以直接使用飞书工具">在对话中可以直接使用飞书工具</h1>
+<h1 id="例如读取飞书文档管理云盘等">例如：读取飞书文档、管理云盘等</h1>
+<p>七、故障排除</p>
+<p>7.1 常见问题</p>
+<p>问题1：Gateway 无法启动</p>
+<h1 id="检查端口占用">检查端口占用</h1>
+<p>netstat -tlnp | grep 18789</p>
+<h1 id="查看日志">查看日志</h1>
+<p>openclaw gateway logs</p>
+<p>问题2：飞书消息无法接收</p>
+<ol type="1">
+<li>检查事件订阅配置</li>
+<li>验证请求地址可访问</li>
+<li>检查权限配置</li>
+<li>查看 Gateway 日志</li>
+</ol>
+<p>问题3：权限不足</p>
+<ol type="1">
+<li>检查应用权限是否齐全</li>
+<li>重新申请权限并发布新版本</li>
+<li>确保管理员已审核通过</li>
+</ol>
+<p>7.2 日志查看</p>
+<h1 id="查看-gateway-日志">查看 Gateway 日志</h1>
+<p>openclaw gateway logs</p>
+<h1 id="查看特定通道日志">查看特定通道日志</h1>
+<p>openclaw gateway logs –channel feishu</p>
+<p>八、安全建议</p>
+<p>8.1 凭证安全</p>
+<ol type="1">
+<li>不要将 App Secret 提交到代码仓库</li>
+<li>使用环境变量存储敏感信息</li>
+<li>定期轮换密钥</li>
+</ol>
+<p>8.2 访问控制</p>
+<ol type="1">
+<li>限制可访问的 IP 范围</li>
+<li>启用飞书的安全设置</li>
+<li>监控异常访问</li>
+</ol>
+<p>8.3 数据保护</p>
+<ol type="1">
+<li>遵守数据最小化原则</li>
+<li>加密存储敏感数据</li>
+<li>定期清理日志</li>
+</ol>
+<p>九、最佳实践</p>
+<p>9.1 开发环境</p>
+<ol type="1">
+<li>使用测试企业进行开发</li>
+<li>配置开发、测试、生产环境</li>
+<li>使用版本控制管理配置</li>
+</ol>
+<p>9.2 监控告警</p>
+<ol type="1">
+<li>监控 Gateway 运行状态</li>
+<li>设置消息处理异常告警</li>
+<li>定期检查服务健康状态</li>
+</ol>
+<p>9.3 性能优化</p>
+<ol type="1">
+<li>合理配置 Gateway 资源</li>
+<li>使用连接池管理数据库连接</li>
+<li>优化消息处理逻辑</li>
+</ol>
+<p>十、当前状态检查</p>
+<p>根据我检查的结果，你的 OpenClaw 已经：</p>
+<p>✅ 飞书工具已注册：</p>
+<p>• feishu_doc：文档操作工具 • feishu_wiki：知识库工具 •
+feishu_drive：云盘工具 • feishu_bitable：多维表格工具</p>
+<p>mr123, [2026/2/26 11:41] ✅ 飞书通道已配置并启用</p>
+<p>❓ 需要确认：</p>
+<ol type="1">
+<li>飞书应用的详细配置（App ID、Secret 等）</li>
+<li>网络访问配置</li>
+<li>事件订阅配置</li>
+</ol>
+<p>下一步建议</p>
+<ol type="1">
+<li>检查飞书应用配置：确保已获取所有必要凭证</li>
+<li>配置网络访问：确保飞书可以访问你的 Gateway</li>
+<li>测试连接：发送测试消息验证集成</li>
+<li>配置权限：根据需求调整应用权限</li>
+</ol>
+<p>需要我帮你检查具体的配置细节，或者指导你完成某个特定步骤吗？</p>

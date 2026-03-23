@@ -1,0 +1,794 @@
+---
+title: OpenClaw本地部署详细指南
+---
+
+<h1 id="openclaw本地部署详细指南">OpenClaw本地部署详细指南</h1>
+<h2 id="部署目标">🎯 部署目标</h2>
+<p>在韩立的本地电脑上部署OpenClaw，实现： 1. 本地AI助手服务 2.
+与本地IM工具（微信、飞书、QQ）集成 3. 本地文件系统访问 4.
+完全控制和安全的数据管理</p>
+<hr />
+<h2 id="部署前检查清单">📋 部署前检查清单</h2>
+<h3 id="硬件要求检查">硬件要求检查：</h3>
+<ul class="task-list">
+<li><input type="checkbox"
+disabled="" /><strong>CPU</strong>：4核或以上（Intel i5/i7或AMD Ryzen
+5/7）</li>
+<li><input type="checkbox"
+disabled="" /><strong>内存</strong>：16GB或以上（推荐32GB）</li>
+<li><input type="checkbox" disabled="" /><strong>存储</strong>：512GB
+SSD或以上</li>
+<li><input type="checkbox"
+disabled="" /><strong>网络</strong>：稳定互联网连接</li>
+<li><input type="checkbox"
+disabled="" /><strong>操作系统</strong>：Windows 10/11, macOS 10.15+,
+Ubuntu 20.04+</li>
+</ul>
+<h3 id="软件环境检查">软件环境检查：</h3>
+<ul class="task-list">
+<li><input type="checkbox"
+disabled="" /><strong>Node.js</strong>：v18.0.0或更高版本</li>
+<li><input type="checkbox"
+disabled="" /><strong>npm</strong>：v8.0.0或更高版本</li>
+<li><input type="checkbox"
+disabled="" /><strong>Git</strong>：已安装并可正常使用</li>
+<li><input type="checkbox"
+disabled="" /><strong>Python</strong>：3.8或更高版本（可选，用于某些扩展）</li>
+<li><input type="checkbox"
+disabled="" /><strong>Docker</strong>：可选，用于容器化部署</li>
+</ul>
+<h3 id="权限检查">权限检查：</h3>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />管理员权限（安装软件需要）</li>
+<li><input type="checkbox" disabled="" />防火墙配置权限</li>
+<li><input type="checkbox" disabled="" />网络访问权限</li>
+</ul>
+<hr />
+<h2 id="部署步骤详解">🚀 部署步骤详解</h2>
+<h3 id="阶段1基础环境准备">阶段1：基础环境准备</h3>
+<h4 id="步骤1.1检查当前系统">步骤1.1：检查当前系统</h4>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Windows（PowerShell或CMD）</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">systeminfo</span> <span class="kw">|</span> <span class="ex">findstr</span> /C:<span class="st">&quot;OS Name&quot;</span> /C:<span class="st">&quot;OS Version&quot;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">wmic</span> cpu get name</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">wmic</span> memorychip get capacity</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># macOS</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="ex">system_profiler</span> SPHardwareDataType</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ex">sysctl</span> <span class="at">-n</span> hw.ncpu</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="ex">sysctl</span> <span class="at">-n</span> hw.memsize</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Linux</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /etc/os-release</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">nproc</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">free</span> <span class="at">-h</span></span></code></pre></div>
+<h4 id="步骤1.2安装node.js">步骤1.2：安装Node.js</h4>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Windows/macOS：从官网下载安装包</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># https://nodejs.org/en/download/</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Linux（Ubuntu/Debian）</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> https://deb.nodesource.com/setup_18.x <span class="kw">|</span> <span class="fu">sudo</span> <span class="at">-E</span> bash <span class="at">-</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install <span class="at">-y</span> nodejs</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 验证安装</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="ex">node</span> <span class="at">--version</span>  <span class="co"># 应该显示 v18.x.x 或更高</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> <span class="at">--version</span>   <span class="co"># 应该显示 v8.x.x 或更高</span></span></code></pre></div>
+<h4 id="步骤1.3安装git">步骤1.3：安装Git</h4>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Windows：从官网下载 Git for Windows</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># https://git-scm.com/download/win</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># macOS</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install git</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Linux（Ubuntu/Debian）</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install git <span class="at">-y</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 验证安装</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> <span class="at">--version</span></span></code></pre></div>
+<h3 id="阶段2openclaw安装">阶段2：OpenClaw安装</h3>
+<h4 id="步骤2.1安装openclaw-cli">步骤2.1：安装OpenClaw CLI</h4>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 全局安装OpenClaw</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install <span class="at">-g</span> openclaw</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 验证安装</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">openclaw</span> <span class="at">--version</span></span></code></pre></div>
+<h4 id="步骤2.2创建工作空间">步骤2.2：创建工作空间</h4>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 创建专用目录</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> ~/openclaw-workspace</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/openclaw-workspace</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 初始化OpenClaw工作空间</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="ex">openclaw</span> init <span class="at">--workspace</span> .</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 查看生成的文件</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-la</span></span></code></pre></div>
+<h4 id="步骤2.3基础配置">步骤2.3：基础配置</h4>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 编辑基础配置文件</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Windows：使用记事本或VS Code</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># macOS/Linux：使用vim或nano</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 配置示例：config/agents.json</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="kw">{</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;default&quot;</span><span class="ex">:</span> {</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;model&quot;</span><span class="ex">:</span> <span class="st">&quot;deepseek/deepseek-chat&quot;</span>,</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;temperature&quot;</span><span class="ex">:</span> 0.7,</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;max_tokens&quot;</span><span class="ex">:</span> 2000</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">}</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="er">}</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 配置示例：config/channels.json</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="kw">{</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;local&quot;</span><span class="ex">:</span> {</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;type&quot;</span><span class="ex">:</span> <span class="st">&quot;console&quot;</span>,</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;enabled&quot;</span><span class="ex">:</span> true</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  <span class="kw">}</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="er">}</span></span></code></pre></div>
+<h3 id="阶段3启动和测试">阶段3：启动和测试</h3>
+<h4 id="步骤3.1启动网关服务">步骤3.1：启动网关服务</h4>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 启动OpenClaw网关</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">openclaw</span> gateway start</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 或以后台服务方式启动</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="ex">openclaw</span> gateway start <span class="at">--daemon</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 检查服务状态</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="ex">openclaw</span> gateway status</span></code></pre></div>
+<h4 id="步骤3.2测试基础功能">步骤3.2：测试基础功能</h4>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 测试命令行交互</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">openclaw</span> chat</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 或通过HTTP接口测试</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> http://localhost:18789/health</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 预期响应：{&quot;status&quot;:&quot;ok&quot;,&quot;version&quot;:&quot;2026.2.x&quot;}</span></span></code></pre></div>
+<h4 id="步骤3.3访问web界面">步骤3.3：访问Web界面</h4>
+<pre><code>打开浏览器访问：
+http://localhost:18789
+
+如果一切正常，您将看到OpenClaw的Web界面。</code></pre>
+<h3 id="阶段4im工具集成">阶段4：IM工具集成</h3>
+<h4 id="步骤4.1飞书集成配置">步骤4.1：飞书集成配置</h4>
+<p><strong>A. 创建飞书应用</strong>： 1. 访问 <a
+href="https://open.feishu.cn/">飞书开放平台</a> 2. 登录您的飞书账号 3.
+创建”企业自建应用” 4. 获取以下信息： - App ID - App Secret -
+Verification Token - Encrypt Key（可选）</p>
+<p><strong>B. 配置OpenClaw</strong>：</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 编辑飞书扩展配置</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">vim</span> ~/openclaw-workspace/extensions/feishu/config.json</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;app_id&quot;</span><span class="fu">:</span> <span class="st">&quot;您的App ID&quot;</span><span class="fu">,</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;app_secret&quot;</span><span class="fu">:</span> <span class="st">&quot;您的App Secret&quot;</span><span class="fu">,</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;verification_token&quot;</span><span class="fu">:</span> <span class="st">&quot;您的Verification Token&quot;</span><span class="fu">,</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;encrypt_key&quot;</span><span class="fu">:</span> <span class="st">&quot;您的Encrypt Key（如果有）&quot;</span><span class="fu">,</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;webhook&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;enabled&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;path&quot;</span><span class="fu">:</span> <span class="st">&quot;/feishu/webhook&quot;</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p><strong>C. 配置飞书事件</strong>： 1. 在飞书开放平台配置”事件订阅” 2.
+请求地址：<code>http://您的公网IP:18789/feishu/webhook</code> 3.
+启用事件：<code>im.message.receive_v1</code> 4. 保存并发布应用</p>
+<h4 id="步骤4.2微信集成配置可选">步骤4.2：微信集成配置（可选）</h4>
+<p><strong>使用微信网页版协议</strong>：</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 安装微信集成扩展</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/openclaw-workspace/extensions</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/openclaw/wechat-integration.git wechat</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> wechat</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 配置微信</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> config.example.json config.json</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 编辑config.json，配置相关参数</span></span></code></pre></div>
+<p><strong>配置说明</strong>：</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;wechat&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;enabled&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;login_method&quot;</span><span class="fu">:</span> <span class="st">&quot;qrcode&quot;</span><span class="fu">,</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;auto_reply&quot;</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;forward_to_openclaw&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;monitored_chats&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;工作群&quot;</span><span class="ot">,</span> <span class="st">&quot;家人群&quot;</span><span class="ot">]</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<h4 id="步骤4.3qq集成配置可选">步骤4.3：QQ集成配置（可选）</h4>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 安装QQ集成</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/openclaw-workspace/extensions</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/openclaw/qq-integration.git qq</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> qq</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install</span></code></pre></div>
+<h3 id="阶段5文件系统集成">阶段5：文件系统集成</h3>
+<h4 id="步骤5.1配置文件访问权限">步骤5.1：配置文件访问权限</h4>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="er">//</span> <span class="er">~/openclaw-workspace/config/permissions.json</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;file_access&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;enabled&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;allowed_paths&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;~/Documents/&quot;</span><span class="ot">,</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;~/Downloads/&quot;</span><span class="ot">,</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;~/Desktop/OpenClawProjects/&quot;</span><span class="ot">,</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;C:/Users/韩立/Documents/&quot;</span>  <span class="er">//</span> <span class="er">Windows路径示例</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;restricted_paths&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;~/Library/&quot;</span><span class="ot">,</span>      <span class="er">//</span> <span class="er">macOS系统文件</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;/etc/&quot;</span><span class="ot">,</span>           <span class="er">//</span> <span class="er">Linux系统配置</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;C:/Windows/&quot;</span>      <span class="er">//</span> <span class="er">Windows系统文件</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;max_file_size_mb&quot;</span><span class="fu">:</span> <span class="dv">50</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<h4 id="步骤5.2创建文件操作技能">步骤5.2：创建文件操作技能</h4>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 创建自定义技能目录</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/openclaw-workspace/skills/file-manager</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 创建技能配置文件</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&gt;</span> ~/openclaw-workspace/skills/file-manager/SKILL.md <span class="op">&lt;&lt; &#39;EOF&#39;</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="st"># 文件管理器技能</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="st">## 功能</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="st">- 浏览本地文件</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="st">- 搜索文件内容</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="st">- 整理文件</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="st">- 文件格式转换</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="st">## 使用方式</span></span></code></pre></div>
+<p>查看文件 [路径] 搜索文件 [关键词] 整理文件夹 [路径]</p>
+<pre><code>
+## 权限
+需要文件访问权限。
+EOF</code></pre>
+<h3 id="阶段6安全配置">阶段6：安全配置</h3>
+<h4 id="步骤6.1配置防火墙">步骤6.1：配置防火墙</h4>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Windows防火墙</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 允许端口18789入站</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># macOS</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pfctl <span class="at">-f</span> /etc/pf.conf</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Linux (Ubuntu)</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> ufw allow 18789/tcp</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> ufw enable</span></code></pre></div>
+<h4 id="步骤6.2配置访问控制">步骤6.2：配置访问控制</h4>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="er">//</span> <span class="er">~/openclaw-workspace/config/security.json</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;authentication&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;enabled&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;api_keys&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;your-secret-api-key&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;require_auth_for_local&quot;</span><span class="fu">:</span> <span class="kw">false</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;rate_limiting&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;enabled&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;requests_per_minute&quot;</span><span class="fu">:</span> <span class="dv">60</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;audit_logging&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;enabled&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;log_file&quot;</span><span class="fu">:</span> <span class="st">&quot;audit.log&quot;</span><span class="fu">,</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;retention_days&quot;</span><span class="fu">:</span> <span class="dv">30</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<h4 id="步骤6.3配置自动更新">步骤6.3：配置自动更新</h4>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 创建更新脚本</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&gt;</span> ~/openclaw-workspace/update.sh <span class="op">&lt;&lt; &#39;EOF&#39;</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="st">#!/bin/bash</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="st">echo &quot;开始更新OpenClaw...&quot;</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="st">cd ~/openclaw-workspace</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="st"># 备份当前配置</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="st">tar -czf backup-$(date +%Y%m%d).tar.gz config/ extensions/ skills/</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="st"># 更新OpenClaw CLI</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="st">npm update -g openclaw</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="st"># 更新扩展</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="st">for ext in extensions/*; do</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="st">  if [ -d &quot;$ext&quot; ] &amp;&amp; [ -f &quot;$ext/package.json&quot; ]; then</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="st">    echo &quot;更新扩展: $(basename $ext)&quot;</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="st">    cd &quot;$ext&quot; &amp;&amp; npm update</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a><span class="st">    cd -</span></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a><span class="st">  fi</span></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a><span class="st">done</span></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a><span class="st">echo &quot;更新完成！&quot;</span></span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a><span class="op">EOF</span></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x ~/openclaw-workspace/update.sh</span></code></pre></div>
+<h3 id="阶段7测试和验证">阶段7：测试和验证</h3>
+<h4 id="步骤7.1功能测试清单">步骤7.1：功能测试清单</h4>
+<p><strong>基础功能测试</strong>： - [ ] 网关服务启动正常 - [ ]
+Web界面可访问 - [ ] 命令行交互正常 - [ ] 健康检查接口正常</p>
+<p><strong>IM集成测试</strong>： - [ ] 飞书消息接收测试 - [ ]
+飞书消息回复测试 - [ ] 微信登录测试（如果配置） - [ ]
+微信消息转发测试</p>
+<p><strong>文件系统测试</strong>： - [ ] 文件浏览功能测试 - [ ]
+文件搜索功能测试 - [ ] 权限控制测试 - [ ] 大文件处理测试</p>
+<p><strong>安全测试</strong>： - [ ] 防火墙配置验证 - [ ] 访问控制测试 -
+[ ] 审计日志记录测试 - [ ] 备份功能测试</p>
+<h4 id="步骤7.2性能测试">步骤7.2：性能测试</h4>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 压力测试脚本示例</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&gt;</span> ~/openclaw-workspace/performance-test.js <span class="op">&lt;&lt; &#39;EOF&#39;</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="st">const http = require(&#39;http&#39;);</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="st">const options = {</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="st">  hostname: &#39;localhost&#39;,</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="st">  port: 18789,</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="st">  path: &#39;/health&#39;,</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="st">  method: &#39;GET&#39;</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="st">};</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="st">let success = 0;</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="st">let failure = 0;</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="st">for (let i = 0; i &lt; 100; i++) {</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a><span class="st">  const req = http.request(options, (res) =&gt; {</span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a><span class="st">    if (res.statusCode === 200) {</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a><span class="st">      success++;</span></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a><span class="st">    } else {</span></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a><span class="st">      failure++;</span></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a><span class="st">  });</span></span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a><span class="st">  req.on(&#39;error&#39;, (e) =&gt; {</span></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a><span class="st">    failure++;</span></span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a><span class="st">  });</span></span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a><span class="st">  req.end();</span></span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a><span class="st">setTimeout(() =&gt; {</span></span>
+<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a><span class="st">  console.log(`测试完成：成功 ${success}，失败 ${failure}`);</span></span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a><span class="st">  console.log(`成功率：${(success / 100 * 100).toFixed(2)}%`);</span></span>
+<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a><span class="st">}, 2000);</span></span>
+<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a><span class="op">EOF</span></span>
+<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a><span class="ex">node</span> ~/openclaw-workspace/performance-test.js</span></code></pre></div>
+<h3 id="阶段8优化和调优">阶段8：优化和调优</h3>
+<h4 id="步骤8.1性能优化">步骤8.1：性能优化</h4>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="er">//</span> <span class="er">~/openclaw-workspace/config/performance.json</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;cache&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;enabled&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;ttl_seconds&quot;</span><span class="fu">:</span> <span class="dv">300</span><span class="fu">,</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;max_size_mb&quot;</span><span class="fu">:</span> <span class="dv">100</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;concurrency&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;max_parallel_requests&quot;</span><span class="fu">:</span> <span class="dv">10</span><span class="fu">,</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;queue_size&quot;</span><span class="fu">:</span> <span class="dv">50</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;memory&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;max_heap_mb&quot;</span><span class="fu">:</span> <span class="dv">1024</span><span class="fu">,</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;gc_interval_seconds&quot;</span><span class="fu">:</span> <span class="dv">60</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<h4 id="步骤8.2日志配置">步骤8.2：日志配置</h4>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="er">//</span> <span class="er">~/openclaw-workspace/config/logging.json</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;level&quot;</span><span class="fu">:</span> <span class="st">&quot;info&quot;</span><span class="fu">,</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;transports&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;file&quot;</span><span class="fu">,</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;filename&quot;</span><span class="fu">:</span> <span class="st">&quot;logs/openclaw.log&quot;</span><span class="fu">,</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;maxsize&quot;</span><span class="fu">:</span> <span class="dv">10485760</span><span class="fu">,</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;maxFiles&quot;</span><span class="fu">:</span> <span class="dv">10</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;console&quot;</span><span class="fu">,</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;colorize&quot;</span><span class="fu">:</span> <span class="kw">true</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<h4 id="步骤8.3监控配置">步骤8.3：监控配置</h4>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 安装监控工具</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install prom-client express <span class="at">--save</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 创建监控端点</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&gt;</span> ~/openclaw-workspace/monitor.js <span class="op">&lt;&lt; &#39;EOF&#39;</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="st">const express = require(&#39;express&#39;);</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="st">const client = require(&#39;prom-client&#39;);</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="st">const app = express();</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="st">const register = new client.Registry();</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="st">// 添加默认指标</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="st">client.collectDefaultMetrics({ register });</span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a><span class="st">app.get(&#39;/metrics&#39;, async (req, res) =&gt; {</span></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a><span class="st">  res.set(&#39;Content-Type&#39;, register.contentType);</span></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a><span class="st">  res.end(await register.metrics());</span></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a><span class="st">});</span></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a><span class="st">app.listen(9090, () =&gt; {</span></span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a><span class="st">  console.log(&#39;监控服务运行在 http://localhost:9090/metrics&#39;);</span></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a><span class="st">});</span></span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a><span class="op">EOF</span></span></code></pre></div>
+<h3 id="阶段9故障排除">阶段9：故障排除</h3>
+<h4 id="常见问题及解决方案">常见问题及解决方案：</h4>
+<p><strong>问题1：端口被占用</strong></p>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 检查端口占用</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">netstat</span> <span class="at">-ano</span> <span class="kw">|</span> <span class="ex">findstr</span> :18789  <span class="co"># Windows</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="ex">lsof</span> <span class="at">-i</span> :18789                 <span class="co"># macOS/Linux</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 解决方案：修改端口</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="ex">openclaw</span> gateway start <span class="at">--port</span> 18790</span></code></pre></div>
+<p><strong>问题2：权限不足</strong></p>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Windows：以管理员身份运行</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co"># macOS/Linux：使用sudo</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> openclaw gateway start</span></code></pre></div>
+<p><strong>问题3：Node.js版本不兼容</strong></p>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 检查Node.js版本</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="ex">node</span> <span class="at">--version</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 升级Node.js</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Windows/macOS：重新下载安装包</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Linux：使用nvm管理版本</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-o-</span> https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh <span class="kw">|</span> <span class="fu">bash</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="ex">nvm</span> install 18</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="ex">nvm</span> use 18</span></code></pre></div>
+<p><strong>问题4：内存不足</strong></p>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 查看内存使用</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="ex">top</span>  <span class="co"># 或 htop, taskmgr</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 解决方案：</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. 增加虚拟内存</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. 优化OpenClaw配置</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. 升级硬件</span></span></code></pre></div>
+<p><strong>问题5：网络连接问题</strong></p>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 测试本地连接</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> http://localhost:18789/health</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 测试外部访问（如果有公网IP）</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> http://您的公网IP:18789/health</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 检查防火墙</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Windows：检查Windows Defender防火墙</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="co"># macOS：检查系统偏好设置-&gt;安全-&gt;防火墙</span></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Linux：sudo ufw status</span></span></code></pre></div>
+<h3 id="阶段10维护和备份">阶段10：维护和备份</h3>
+<h4 id="步骤10.1创建备份脚本">步骤10.1：创建备份脚本</h4>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&gt;</span> ~/openclaw-workspace/backup.sh <span class="op">&lt;&lt; &#39;EOF&#39;</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="st">#!/bin/bash</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="st">BACKUP_DIR=&quot;/path/to/backup/folder&quot;</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="st">DATE=$(date +%Y%m%d_%H%M%S)</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="st">BACKUP_FILE=&quot;$BACKUP_DIR/openclaw-backup-$DATE.tar.gz&quot;</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="st">echo &quot;开始备份OpenClaw工作空间...&quot;</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="st"># 创建备份目录</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="st">mkdir -p &quot;$BACKUP_DIR&quot;</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a><span class="st"># 备份重要文件</span></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a><span class="st">tar -czf &quot;$BACKUP_FILE&quot; \</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a><span class="st">  ~/openclaw-workspace/config/ \</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a><span class="st">  ~/openclaw-workspace/extensions/ \</span></span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a><span class="st">  ~/openclaw-workspace/skills/ \</span></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a><span class="st">  ~/openclaw-workspace/workspace/ \</span></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a><span class="st">  ~/openclaw-workspace/*.json \</span></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a><span class="st">  ~/openclaw-workspace/*.md</span></span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a><span class="st"># 备份数据库（如果有）</span></span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a><span class="st">if [ -f ~/openclaw-workspace/data/database.sqlite ]; then</span></span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a><span class="st">  cp ~/openclaw-workspace/data/database.sqlite &quot;$BACKUP_DIR/database-$DATE.sqlite&quot;</span></span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a><span class="st">fi</span></span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a><span class="st">echo &quot;备份完成：$BACKUP_FILE&quot;</span></span>
+<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a><span class="st">echo &quot;备份大小：$(du -h &quot;$BACKUP_FILE&quot; | cut -f1)&quot;</span></span>
+<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a><span class="st"># 清理旧备份（保留最近7天）</span></span>
+<span id="cb30-30"><a href="#cb30-30" aria-hidden="true" tabindex="-1"></a><span class="st">find &quot;$BACKUP_DIR&quot; -name &quot;openclaw-backup-*.tar.gz&quot; -mtime +7 -delete</span></span>
+<span id="cb30-31"><a href="#cb30-31" aria-hidden="true" tabindex="-1"></a><span class="st">find &quot;$BACKUP_DIR&quot; -name &quot;database-*.sqlite&quot; -mtime +7 -delete</span></span>
+<span id="cb30-32"><a href="#cb30-32" aria-hidden="true" tabindex="-1"></a><span class="op">EOF</span></span>
+<span id="cb30-33"><a href="#cb30-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-34"><a href="#cb30-34" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x ~/openclaw-workspace/backup.sh</span></code></pre></div>
+<h4 id="步骤10.2设置自动备份">步骤10.2：设置自动备份</h4>
+<div class="sourceCode" id="cb31"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Linux/macOS：使用cron</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">crontab</span> <span class="at">-e</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 添加以下行（每天凌晨2点备份）</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="ex">0</span> 2 <span class="pp">*</span> <span class="pp">*</span> <span class="pp">*</span> /home/韩立/openclaw-workspace/backup.sh</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Windows：使用任务计划程序</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. 打开&quot;任务计划程序&quot;</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. 创建基本任务</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. 设置触发器：每天2:00 AM</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. 操作：启动程序，选择backup.sh</span></span></code></pre></div>
+<h4 id="步骤10.3创建恢复脚本">步骤10.3：创建恢复脚本</h4>
+<div class="sourceCode" id="cb32"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&gt;</span> ~/openclaw-workspace/restore.sh <span class="op">&lt;&lt; &#39;EOF&#39;</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="st">#!/bin/bash</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="st">if [ -z &quot;$1&quot; ]; then</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="st">  echo &quot;使用方法: $0 &lt;备份文件&gt;&quot;</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="st">  echo &quot;示例: $0 /path/to/backup/openclaw-backup-20260301.tar.gz&quot;</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="st">  exit 1</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="st">fi</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a><span class="st">BACKUP_FILE=&quot;$1&quot;</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a><span class="st">if [ ! -f &quot;$BACKUP_FILE&quot; ]; then</span></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a><span class="st">  echo &quot;错误：备份文件不存在: $BACKUP_FILE&quot;</span></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="st">  exit 1</span></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a><span class="st">fi</span></span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a><span class="st">echo &quot;警告：这将覆盖当前的OpenClaw配置！&quot;</span></span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a><span class="st">read -p &quot;是否继续？(y/N): &quot; -n 1 -r</span></span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a><span class="st">echo</span></span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a><span class="st">if [[ ! $REPLY =~ ^[Yy]$ ]]; then</span></span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a><span class="st">  echo &quot;恢复操作已取消&quot;</span></span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a><span class="st">  exit 0</span></span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a><span class="st">fi</span></span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a><span class="st">echo &quot;开始恢复OpenClaw配置...&quot;</span></span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a><span class="st"># 停止OpenClaw服务</span></span>
+<span id="cb32-27"><a href="#cb32-27" aria-hidden="true" tabindex="-1"></a><span class="st">openclaw gateway stop 2&gt;/dev/null || true</span></span>
+<span id="cb32-28"><a href="#cb32-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-29"><a href="#cb32-29" aria-hidden="true" tabindex="-1"></a><span class="st"># 备份当前配置</span></span>
+<span id="cb32-30"><a href="#cb32-30" aria-hidden="true" tabindex="-1"></a><span class="st">CURRENT_BACKUP=&quot;/tmp/openclaw-current-$(date +%s).tar.gz&quot;</span></span>
+<span id="cb32-31"><a href="#cb32-31" aria-hidden="true" tabindex="-1"></a><span class="st">tar -czf &quot;$CURRENT_BACKUP&quot; ~/openclaw-workspace/config/ ~/openclaw-workspace/extensions/ ~/openclaw-workspace/skills/</span></span>
+<span id="cb32-32"><a href="#cb32-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-33"><a href="#cb32-33" aria-hidden="true" tabindex="-1"></a><span class="st"># 解压备份文件</span></span>
+<span id="cb32-34"><a href="#cb32-34" aria-hidden="true" tabindex="-1"></a><span class="st">tar -xzf &quot;$BACKUP_FILE&quot; -C ~/openclaw-workspace/</span></span>
+<span id="cb32-35"><a href="#cb32-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-36"><a href="#cb32-36" aria-hidden="true" tabindex="-1"></a><span class="st">echo &quot;恢复完成！&quot;</span></span>
+<span id="cb32-37"><a href="#cb32-37" aria-hidden="true" tabindex="-1"></a><span class="st">echo &quot;当前配置已备份到: $CURRENT_BACKUP&quot;</span></span>
+<span id="cb32-38"><a href="#cb32-38" aria-hidden="true" tabindex="-1"></a><span class="st">echo &quot;请重新启动OpenClaw服务: openclaw gateway start&quot;</span></span>
+<span id="cb32-39"><a href="#cb32-39" aria-hidden="true" tabindex="-1"></a><span class="op">EOF</span></span>
+<span id="cb32-40"><a href="#cb32-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-41"><a href="#cb32-41" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x ~/openclaw-workspace/restore.sh</span></code></pre></div>
+<hr />
+<h2 id="部署进度跟踪表">📊 部署进度跟踪表</h2>
+<h3 id="部署阶段跟踪">部署阶段跟踪：</h3>
+<table>
+<thead>
+<tr class="header">
+<th>阶段</th>
+<th>任务</th>
+<th>状态</th>
+<th>预计时间</th>
+<th>实际时间</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>环境准备</td>
+<td>□</td>
+<td>30分钟</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>OpenClaw安装</td>
+<td>□</td>
+<td>20分钟</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>启动测试</td>
+<td>□</td>
+<td>15分钟</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>IM工具集成</td>
+<td>□</td>
+<td>60分钟</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>文件系统集成</td>
+<td>□</td>
+<td>30分钟</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>安全配置</td>
+<td>□</td>
+<td>30分钟</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>测试验证</td>
+<td>□</td>
+<td>45分钟</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>优化调优</td>
+<td>□</td>
+<td>30分钟</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>故障排除</td>
+<td>□</td>
+<td>可变</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>维护备份</td>
+<td>□</td>
+<td>20分钟</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>总预计时间</strong>：约4小时</p>
+<hr />
+<h2 id="部署成功标准">🎯 部署成功标准</h2>
+<h3 id="必须完成">必须完成：</h3>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />OpenClaw网关服务正常启动</li>
+<li><input type="checkbox" disabled="" />Web界面可正常访问</li>
+<li><input type="checkbox" disabled="" />基础对话功能正常</li>
+<li><input type="checkbox" disabled="" />文件访问功能正常</li>
+<li><input type="checkbox" disabled="" />至少一个IM工具集成正常</li>
+</ul>
+<h3 id="建议完成">建议完成：</h3>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />飞书集成配置完成</li>
+<li><input type="checkbox" disabled="" />微信集成配置完成（可选）</li>
+<li><input type="checkbox" disabled="" />安全配置完成</li>
+<li><input type="checkbox" disabled="" />备份机制设置完成</li>
+<li><input type="checkbox" disabled="" />监控配置完成</li>
+</ul>
+<h3 id="高级功能可选">高级功能（可选）：</h3>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />自动化工作流配置</li>
+<li><input type="checkbox" disabled="" />自定义技能开发</li>
+<li><input type="checkbox" disabled="" />多用户支持配置</li>
+<li><input type="checkbox" disabled="" />高级监控和告警</li>
+</ul>
+<hr />
+<h2 id="注意事项">⚠️ 注意事项</h2>
+<h3 id="安全注意事项">安全注意事项：</h3>
+<ol type="1">
+<li><strong>不要</strong>在配置文件硬编码敏感信息（API密钥等）</li>
+<li><strong>务必</strong>配置防火墙，只开放必要端口</li>
+<li><strong>定期</strong>更新OpenClaw和依赖包</li>
+<li><strong>启用</strong>操作审计日志</li>
+<li><strong>设置</strong>定期备份</li>
+</ol>
+<h3 id="性能注意事项">性能注意事项：</h3>
+<ol type="1">
+<li>监控内存使用，避免内存泄漏</li>
+<li>配置合理的缓存策略</li>
+<li>优化数据库查询（如果有）</li>
+<li>定期清理日志文件</li>
+</ol>
+<h3 id="维护注意事项">维护注意事项：</h3>
+<ol type="1">
+<li>定期检查服务状态</li>
+<li>监控磁盘空间使用</li>
+<li>查看错误日志</li>
+<li>测试备份恢复流程</li>
+</ol>
+<hr />
+<h2 id="故障排除工具箱">🔧 故障排除工具箱</h2>
+<h3 id="诊断命令">诊断命令：</h3>
+<div class="sourceCode" id="cb33"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 检查服务状态</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="ex">openclaw</span> gateway status</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 查看日志</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span> <span class="at">-f</span> ~/openclaw-workspace/logs/openclaw.log</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 检查端口占用</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="fu">netstat</span> <span class="at">-tulpn</span> <span class="kw">|</span> <span class="fu">grep</span> :18789</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 检查进程</span></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ps</span> aux <span class="kw">|</span> <span class="fu">grep</span> openclaw</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 检查网络连接</span></span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-v</span> http://localhost:18789/health</span></code></pre></div>
+<h3 id="重置命令">重置命令：</h3>
+<div class="sourceCode" id="cb34"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 重置配置（危险！备份先！）</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="ex">openclaw</span> init <span class="at">--force</span> <span class="at">--workspace</span> ~/openclaw-workspace</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 重新安装</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> uninstall <span class="at">-g</span> openclaw</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install <span class="at">-g</span> openclaw</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 清理缓存</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> cache clean <span class="at">--force</span></span></code></pre></div>
+<h3 id="调试模式">调试模式：</h3>
+<div class="sourceCode" id="cb35"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 启动调试模式</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="ex">openclaw</span> gateway start <span class="at">--debug</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 查看详细日志</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="ex">openclaw</span> gateway start <span class="at">--log-level</span> debug</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 测试特定功能</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="ex">openclaw</span> test <span class="at">--all</span></span></code></pre></div>
+<hr />
+<h2 id="支持资源">📞 支持资源</h2>
+<h3 id="官方资源">官方资源：</h3>
+<ol type="1">
+<li><strong>OpenClaw文档</strong>：https://docs.openclaw.ai</li>
+<li><strong>GitHub仓库</strong>：https://github.com/openclaw/openclaw</li>
+<li><strong>Discord社区</strong>：https://discord.gg/clawd</li>
+<li><strong>问题反馈</strong>：GitHub Issues</li>
+</ol>
+<h3 id="社区资源">社区资源：</h3>
+<ol type="1">
+<li><strong>技术博客</strong>：相关技术博客和教程</li>
+<li><strong>Stack Overflow</strong>：OpenClaw相关问答</li>
+<li><strong>Reddit社区</strong>：r/openclaw</li>
+<li><strong>中文社区</strong>：相关技术论坛</li>
+</ol>
+<h3 id="本地支持">本地支持：</h3>
+<ol type="1">
+<li><strong>系统日志</strong>：<code>~/openclaw-workspace/logs/</code></li>
+<li><strong>配置文档</strong>：本指南及相关配置文件</li>
+<li><strong>备份文件</strong>：定期备份的配置和数据</li>
+</ol>
+<hr />
+<h2 id="部署完成确认">🎉 部署完成确认</h2>
+<h3 id="最终检查清单">最终检查清单：</h3>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />所有必须完成的项目都已勾选</li>
+<li><input type="checkbox" disabled="" />服务运行稳定超过24小时</li>
+<li><input type="checkbox" disabled="" />关键功能测试通过</li>
+<li><input type="checkbox" disabled="" />安全配置检查完成</li>
+<li><input type="checkbox" disabled="" />备份恢复测试通过</li>
+<li><input type="checkbox" disabled="" />文档整理完成</li>
+</ul>
+<h3 id="部署成功标志">部署成功标志：</h3>
+<ol type="1">
+<li>✅ OpenClaw服务稳定运行</li>
+<li>✅ IM工具集成正常工作</li>
+<li>✅ 文件访问功能正常</li>
+<li>✅ 安全配置生效</li>
+<li>✅ 监控和备份运行正常</li>
+</ol>
+<hr />
+<p><strong>文档版本</strong>：v1.0<br />
+<strong>创建时间</strong>：2026年3月1日<br />
+<strong>适用系统</strong>：Windows/macOS/Linux<br />
+<strong>目标用户</strong>：韩立<br />
+<strong>部署类型</strong>：本地单机部署</p>
+<p><strong>下一步</strong>：按照本指南逐步执行，遇到问题时参考故障排除部分。</p>

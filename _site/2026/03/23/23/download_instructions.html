@@ -1,0 +1,128 @@
+---
+title: 📥 文档下载指南
+---
+
+<h1 id="文档下载指南">📥 文档下载指南</h1>
+<h2 id="可下载的文档">可下载的文档</h2>
+<h3 id="中国古代十大诗人精品全集李白相关文档">1.
+《中国古代十大诗人精品全集·李白》相关文档</h3>
+<ul>
+<li><strong>中文版Markdown:</strong>
+<code>中国古代十大诗人精品全集_李白.md</code></li>
+<li><strong>英文版Markdown:</strong>
+<code>Classical_Chinese_Ten_Poets_Li_Bai.md</code></li>
+<li><strong>OCR测试结果:</strong>
+<code>pdf_conversion/converted_pages_1_10.txt</code></li>
+<li><strong>优化OCR结果:</strong>
+<code>optimized_conversion/古籍转换结果_1_10.txt</code></li>
+</ul>
+<h3 id="工具脚本">2. 工具脚本</h3>
+<ul>
+<li><strong>PDF转换器:</strong>
+<code>pdf_to_text_converter.py</code></li>
+<li><strong>简化转换器:</strong>
+<code>simple_pdf_converter.py</code></li>
+<li><strong>优化转换器:</strong>
+<code>optimized_pdf_converter.py</code></li>
+<li><strong>OCR系统:</strong> <code>ocr_system.py</code></li>
+</ul>
+<h2 id="下载方法">下载方法</h2>
+<h3 id="方法a直接复制内容最简单">方法A：直接复制内容（最简单）</h3>
+<p>文档内容已在上面的聊天记录中，可以直接复制粘贴。</p>
+<h3 id="方法b通过钉钉附件下载">方法B：通过钉钉附件下载</h3>
+<p>我已经通过钉钉消息发送了中文版Markdown文件，你可以在钉钉中直接下载。</p>
+<h3
+id="方法chttp下载如果服务器有公网ip">方法C：HTTP下载（如果服务器有公网IP）</h3>
+<pre><code># 中文版
+http://服务器IP:8080/中国古代十大诗人精品全集_李白.md
+
+# 英文版  
+http://服务器IP:8080/Classical_Chinese_Ten_Poets_Li_Bai.md
+
+# 所有文件列表
+http://服务器IP:8080/</code></pre>
+<h3
+id="方法dscpsftp下载需要ssh访问">方法D：SCP/SFTP下载（需要SSH访问）</h3>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 下载单个文件</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> root@服务器IP:/root/.openclaw/workspace/中国古代十大诗人精品全集_李白.md .</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 下载整个workspace目录</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> <span class="at">-r</span> root@服务器IP:/root/.openclaw/workspace/ ./本地目录/</span></code></pre></div>
+<h3 id="方法e使用wget或curl">方法E：使用wget或curl</h3>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 如果HTTP服务可用</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> http://服务器IP:8080/中国古代十大诗人精品全集_李白.md</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-O</span> http://服务器IP:8080/中国古代十大诗人精品全集_李白.md</span></code></pre></div>
+<h2 id="文件位置说明">文件位置说明</h2>
+<pre><code>/root/.openclaw/workspace/
+├── 中国古代十大诗人精品全集_李白.md          # 中文Markdown
+├── Classical_Chinese_Ten_Poets_Li_Bai.md     # 英文Markdown
+├── pdf_conversion/                           # PDF转换结果
+│   ├── converted_pages_1_10.txt              # OCR测试结果
+│   ├── images/                               # 提取的图片
+│   └── text/                                 # 文本文件
+├── optimized_conversion/                     # 优化转换结果
+│   └── 古籍转换结果_1_10.txt                 # 优化OCR结果
+├── memo/                                     # 备忘系统
+├── pdf_to_text_converter.py                  # PDF转换工具
+├── simple_pdf_converter.py                   # 简化转换器
+├── optimized_pdf_converter.py                # 优化转换器
+└── ocr_system.py                             # OCR系统</code></pre>
+<h2 id="本地查看建议">本地查看建议</h2>
+<h3 id="markdown查看器">1. Markdown查看器</h3>
+<ul>
+<li><strong>VS Code</strong> + Markdown预览插件</li>
+<li><strong>Typora</strong>（优秀的Markdown编辑器）</li>
+<li><strong>Obsidian</strong>（知识管理工具）</li>
+<li><strong>MarkText</strong>（开源Markdown编辑器）</li>
+</ul>
+<h3 id="在线工具">2. 在线工具</h3>
+<ul>
+<li><strong>StackEdit</strong>（在线Markdown编辑器）</li>
+<li><strong>Dillinger</strong>（在线Markdown编辑器）</li>
+<li><strong>GitHub/GitLab</strong>（直接查看.md文件）</li>
+</ul>
+<h3 id="浏览器插件">3. 浏览器插件</h3>
+<ul>
+<li><strong>Markdown Viewer</strong>（Chrome/Firefox插件）</li>
+<li><strong>Markdown Preview Plus</strong>（Chrome插件）</li>
+</ul>
+<h2 id="文档内容说明">文档内容说明</h2>
+<h3 id="中文版markdown包含">中文版Markdown包含：</h3>
+<ol type="1">
+<li>书籍基本信息（书名、作者、出版社等）</li>
+<li>文件技术信息（大小、页数、数字指纹）</li>
+<li>内容概述（丛书信息、编辑团队）</li>
+<li>文件特点和使用建议</li>
+<li>出版信息和版权详情</li>
+<li>相关资源和学术价值</li>
+<li>文件统计和总结</li>
+</ol>
+<h3
+id="英文版包含相同内容适合国际交流">英文版包含相同内容，适合国际交流。</h3>
+<h2 id="注意事项">注意事项</h2>
+<ol type="1">
+<li><strong>文件编码：</strong> UTF-8编码，支持中文</li>
+<li><strong>格式：</strong> 标准Markdown格式，兼容大多数查看器</li>
+<li><strong>大小：</strong> 中文版约2.8KB，英文版约6KB</li>
+<li><strong>内容：</strong> 基于PDF元数据生成，不包含书籍正文</li>
+</ol>
+<h2 id="快速开始">快速开始</h2>
+<h3 id="最简单的方法">最简单的方法：</h3>
+<ol type="1">
+<li>复制上面聊天记录中的文档内容</li>
+<li>粘贴到文本编辑器（如VS Code）</li>
+<li>保存为<code>.md</code>文件</li>
+<li>使用Markdown查看器打开</li>
+</ol>
+<h3 id="或者">或者：</h3>
+<ol type="1">
+<li>在钉钉中下载我发送的附件</li>
+<li>保存到本地</li>
+<li>用喜欢的编辑器打开</li>
+</ol>
+<hr />
+<p><strong>生成时间：</strong> 2026年2月27日<br />
+<strong>服务器：</strong> VM-0-10-opencloudos<br />
+<strong>工作目录：</strong> <code>/root/.openclaw/workspace/</code></p>

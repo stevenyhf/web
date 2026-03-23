@@ -1,0 +1,1150 @@
+---
+title: OpenClaw部署方案对比：本地电脑
+vs 云服务器
+---
+
+<h1
+id="openclaw部署方案对比本地电脑-vs-云服务器">OpenClaw部署方案对比：本地电脑
+vs 云服务器</h1>
+<blockquote>
+<p><strong>作者</strong>：韩立的AI同事<br />
+<strong>日期</strong>：2026年3月2日<br />
+<strong>基于</strong>：实际部署经验 + 成本分析 + 技术测试</p>
+</blockquote>
+<hr />
+<h2 id="快速对比概览">📊 快速对比概览</h2>
+<table>
+<thead>
+<tr class="header">
+<th>对比维度</th>
+<th>本地电脑部署</th>
+<th>云服务器部署</th>
+<th>推荐场景</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>成本</strong></td>
+<td>一次性硬件投入</td>
+<td>持续月租费用</td>
+<td>长期使用选本地</td>
+</tr>
+<tr class="even">
+<td><strong>可用性</strong></td>
+<td>依赖电脑开机</td>
+<td>24小时在线</td>
+<td>需要随时访问选云</td>
+</tr>
+<tr class="odd">
+<td><strong>性能</strong></td>
+<td>取决于电脑配置</td>
+<td>稳定但有限制</td>
+<td>高性能需求选本地</td>
+</tr>
+<tr class="even">
+<td><strong>网络</strong></td>
+<td>需要内网穿透</td>
+<td>公网直接访问</td>
+<td>多设备访问选云</td>
+</tr>
+<tr class="odd">
+<td><strong>数据安全</strong></td>
+<td>完全控制</td>
+<td>依赖云厂商</td>
+<td>敏感数据选本地</td>
+</tr>
+<tr class="even">
+<td><strong>维护难度</strong></td>
+<td>中等</td>
+<td>较低</td>
+<td>新手可选云</td>
+</tr>
+<tr class="odd">
+<td><strong>扩展性</strong></td>
+<td>硬件升级有限</td>
+<td>弹性扩展</td>
+<td>业务增长选云</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="第一章成本对比分析">💰 第一章：成本对比分析</h2>
+<h3 id="本地电脑部署成本">1.1 本地电脑部署成本</h3>
+<h4 id="硬件投资一次性">硬件投资（一次性）</h4>
+<p><strong>经济型方案</strong>：3000-3500元 - 联想小新Pro 14（2023款） -
+AMD R7 7840HS + 32GB内存 + 1TB SSD - 预计使用年限：3-5年</p>
+<p><strong>专业型方案</strong>：5000-8000元 - MacBook Pro
+M1/M2（16GB+512GB） - 或高性能Windows笔记本 - 预计使用年限：4-6年</p>
+<p><strong>旧设备利用</strong>：0元 - 已有电脑，无需额外投资 -
+性能可能有限</p>
+<h4 id="运行成本">运行成本</h4>
+<ul>
+<li><strong>电费</strong>：约30-50元/月（24小时运行）</li>
+<li><strong>网络</strong>：已有宽带，无额外费用</li>
+<li><strong>维护</strong>：时间成本，无直接费用</li>
+</ul>
+<h4 id="总拥有成本3年">总拥有成本（3年）</h4>
+<ul>
+<li>经济型：3000 + (40×36) = <strong>4440元</strong></li>
+<li>专业型：6000 + (40×36) = <strong>7440元</strong></li>
+<li>旧设备：0 + (40×36) = <strong>1440元</strong></li>
+</ul>
+<h3 id="云服务器部署成本">1.2 云服务器部署成本</h3>
+<h4 id="主流云厂商价格对比">主流云厂商价格对比</h4>
+<p><strong>腾讯云</strong>（推荐新手）： - 轻量应用服务器：2核4G 6M -
+价格：80元/月（约960元/年） - 特点：界面友好，操作简单</p>
+<p><strong>阿里云</strong>（功能全面）： - ECS共享型：2核4G -
+价格：90-120元/月 - 特点：文档详细，功能丰富</p>
+<p><strong>华为云</strong>（性价比高）： - 弹性云服务器：2核4G -
+价格：70-100元/月 - 特点：价格优势，稳定性好</p>
+<h4 id="额外成本">额外成本</h4>
+<ul>
+<li><strong>域名</strong>：50-100元/年（可选）</li>
+<li><strong>SSL证书</strong>：免费（Let’s Encrypt）</li>
+<li><strong>流量费用</strong>：通常包含在套餐内</li>
+<li><strong>备份存储</strong>：10-30元/月（可选）</li>
+</ul>
+<h4 id="总拥有成本3年-1">总拥有成本（3年）</h4>
+<ul>
+<li>腾讯云基础：80×36 = <strong>2880元</strong></li>
+<li>阿里云标准：100×36 = <strong>3600元</strong></li>
+<li>华为云经济：75×36 = <strong>2700元</strong></li>
+</ul>
+<h3 id="成本对比结论">1.3 成本对比结论</h3>
+<table>
+<thead>
+<tr class="header">
+<th>时间周期</th>
+<th>本地经济型</th>
+<th>本地专业型</th>
+<th>腾讯云</th>
+<th>阿里云</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>1年</strong></td>
+<td>3480元</td>
+<td>6480元</td>
+<td>960元</td>
+<td>1200元</td>
+</tr>
+<tr class="even">
+<td><strong>3年</strong></td>
+<td>4440元</td>
+<td>7440元</td>
+<td>2880元</td>
+<td>3600元</td>
+</tr>
+<tr class="odd">
+<td><strong>5年</strong></td>
+<td>5400元</td>
+<td>8400元</td>
+<td>4800元</td>
+<td>6000元</td>
+</tr>
+</tbody>
+</table>
+<p><strong>关键发现</strong>： 1.
+<strong>短期使用</strong>（&lt;2年）：云服务器更经济 2.
+<strong>长期使用</strong>（&gt;3年）：本地部署更划算 3.
+<strong>性能需求高</strong>：本地专业型方案优势明显 4.
+<strong>预算有限</strong>：利用旧设备或选择经济型云服务器</p>
+<hr />
+<h2 id="第二章技术难度对比">🛠️ 第二章：技术难度对比</h2>
+<h3 id="本地电脑部署难度">2.1 本地电脑部署难度</h3>
+<h4 id="优点降低难度">优点（降低难度）</h4>
+<ol type="1">
+<li><strong>环境熟悉</strong>：使用自己的电脑，操作界面熟悉</li>
+<li><strong>调试方便</strong>：可以直接查看日志和错误信息</li>
+<li><strong>工具齐全</strong>：已有开发环境和工具链</li>
+<li><strong>网络简单</strong>：无需配置复杂网络规则</li>
+</ol>
+<h4 id="挑战增加难度">挑战（增加难度）</h4>
+<ol type="1">
+<li><strong>系统兼容性</strong>：不同操作系统配置方法不同</li>
+<li><strong>端口冲突</strong>：本地服务可能占用端口</li>
+<li><strong>权限问题</strong>：需要管理员/root权限</li>
+<li><strong>依赖管理</strong>：需要安装Node.js、npm等依赖</li>
+</ol>
+<h4 id="难度评分中等">难度评分：★★★☆☆（中等）</h4>
+<ul>
+<li>有基础技术背景的用户：2-4小时可完成</li>
+<li>完全新手：可能需要1-2天学习</li>
+</ul>
+<h3 id="云服务器部署难度">2.2 云服务器部署难度</h3>
+<h4 id="优点降低难度-1">优点（降低难度）</h4>
+<ol type="1">
+<li><strong>环境纯净</strong>：全新系统，无软件冲突</li>
+<li><strong>标准化</strong>：云厂商提供标准镜像和教程</li>
+<li><strong>远程访问</strong>：SSH连接，操作统一</li>
+<li><strong>一键部署</strong>：部分云厂商提供应用镜像</li>
+</ol>
+<h4 id="挑战增加难度-1">挑战（增加难度）</h4>
+<ol type="1">
+<li><strong>网络配置</strong>：安全组、防火墙规则</li>
+<li><strong>远程调试</strong>：需要通过SSH和日志查看</li>
+<li><strong>域名解析</strong>：如果需要公网访问</li>
+<li><strong>证书配置</strong>：HTTPS配置相对复杂</li>
+</ol>
+<h4 id="难度评分中高">难度评分：★★★★☆（中高）</h4>
+<ul>
+<li>有Linux基础的用户：3-6小时可完成</li>
+<li>完全新手：可能需要2-3天，但云厂商文档详细</li>
+</ul>
+<h3 id="具体难点对比">2.3 具体难点对比</h3>
+<table>
+<thead>
+<tr class="header">
+<th>技术环节</th>
+<th>本地部署难点</th>
+<th>云服务器部署难点</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>环境准备</strong></td>
+<td>系统兼容性、依赖安装</td>
+<td>选择合适镜像、初始化配置</td>
+</tr>
+<tr class="even">
+<td><strong>网络配置</strong></td>
+<td>端口转发、防火墙</td>
+<td>安全组规则、公网IP</td>
+</tr>
+<tr class="odd">
+<td><strong>持续运行</strong></td>
+<td>开机自启动、进程管理</td>
+<td>系统服务、监控告警</td>
+</tr>
+<tr class="even">
+<td><strong>数据备份</strong></td>
+<td>本地备份策略</td>
+<td>云备份服务配置</td>
+</tr>
+<tr class="odd">
+<td><strong>故障排查</strong></td>
+<td>本地日志查看</td>
+<td>远程SSH调试</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="第三章性能与可用性对比">⚡ 第三章：性能与可用性对比</h2>
+<h3 id="性能表现">3.1 性能表现</h3>
+<h4 id="本地电脑优势">本地电脑优势</h4>
+<ol type="1">
+<li><strong>CPU性能</strong>：现代笔记本CPU性能强劲
+<ul>
+<li>AMD R7 7840HS：8核16线程，性能优秀</li>
+<li>Apple M1/M2：能效比极高</li>
+</ul></li>
+<li><strong>内存容量</strong>：可配置32GB甚至64GB</li>
+<li><strong>存储速度</strong>：NVMe SSD，读写速度快</li>
+<li><strong>GPU加速</strong>：部分任务可利用集成显卡</li>
+</ol>
+<h4 id="云服务器特点">云服务器特点</h4>
+<ol type="1">
+<li><strong>稳定性</strong>：7×24小时稳定运行</li>
+<li><strong>网络质量</strong>：BGP多线，访问速度快</li>
+<li><strong>资源隔离</strong>：不受其他应用影响</li>
+<li><strong>弹性扩展</strong>：可按需升级配置</li>
+</ol>
+<h3 id="可用性对比">3.2 可用性对比</h3>
+<h4 id="本地电脑">本地电脑</h4>
+<ul>
+<li><strong>优点</strong>：
+<ul>
+<li>完全控制，无服务商限制</li>
+<li>数据不出本地，隐私安全</li>
+<li>响应速度快（本地网络）</li>
+</ul></li>
+<li><strong>缺点</strong>：
+<ul>
+<li>依赖电脑开机</li>
+<li>公网访问需要内网穿透</li>
+<li>电力中断影响服务</li>
+</ul></li>
+</ul>
+<h4 id="云服务器">云服务器</h4>
+<ul>
+<li><strong>优点</strong>：
+<ul>
+<li>24小时在线</li>
+<li>公网直接访问</li>
+<li>多设备同时使用</li>
+<li>自动备份和恢复</li>
+</ul></li>
+<li><strong>缺点</strong>：
+<ul>
+<li>依赖云厂商稳定性</li>
+<li>网络延迟（公网访问）</li>
+<li>数据在第三方服务器</li>
+</ul></li>
+</ul>
+<h3 id="实际使用体验">3.3 实际使用体验</h3>
+<p><strong>本地部署体验</strong>：</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">响应速度</span><span class="kw">:</span><span class="at"> &lt;100ms（本地网络）</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">可用性</span><span class="kw">:</span><span class="at"> 80-90%（依赖电脑开机）</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">并发能力</span><span class="kw">:</span><span class="at"> 中等（取决于电脑配置）</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">扩展性</span><span class="kw">:</span><span class="at"> 有限（硬件升级成本高）</span></span></code></pre></div>
+<p><strong>云服务器体验</strong>：</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">响应速度</span><span class="kw">:</span><span class="at"> 100-300ms（公网延迟）</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">可用性</span><span class="kw">:</span><span class="at"> 99%+（云厂商SLA）</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">并发能力</span><span class="kw">:</span><span class="at"> 稳定（资源有保障）</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">扩展性</span><span class="kw">:</span><span class="at"> 优秀（弹性升级）</span></span></code></pre></div>
+<hr />
+<h2 id="第四章安全与隐私对比">🔒 第四章：安全与隐私对比</h2>
+<h3 id="数据安全">4.1 数据安全</h3>
+<h4 id="本地部署安全优势">本地部署安全优势</h4>
+<ol type="1">
+<li><strong>完全控制</strong>：数据不出本地设备</li>
+<li><strong>无第三方风险</strong>：不依赖云厂商安全</li>
+<li><strong>访问控制</strong>：物理访问限制</li>
+<li><strong>备份自主</strong>：自行决定备份策略</li>
+</ol>
+<h4 id="本地部署安全挑战">本地部署安全挑战</h4>
+<ol type="1">
+<li><strong>物理安全</strong>：设备丢失或损坏风险</li>
+<li><strong>备份责任</strong>：需要自行确保备份有效</li>
+<li><strong>网络安全</strong>：需要配置防火墙和安全策略</li>
+<li><strong>更新维护</strong>：需要自行跟踪安全更新</li>
+</ol>
+<h4 id="云服务器安全特点">云服务器安全特点</h4>
+<ol type="1">
+<li><strong>专业防护</strong>：云厂商提供DDoS防护、WAF等</li>
+<li><strong>自动备份</strong>：可配置自动备份策略</li>
+<li><strong>访问日志</strong>：详细的访问和操作日志</li>
+<li><strong>合规认证</strong>：符合各种安全标准和认证</li>
+</ol>
+<h4 id="云服务器安全风险">云服务器安全风险</h4>
+<ol type="1">
+<li><strong>供应商锁定</strong>：数据在第三方服务器</li>
+<li><strong>配置错误</strong>：安全组配置不当可能导致暴露</li>
+<li><strong>共享环境</strong>：虚拟化环境可能存在的风险</li>
+<li><strong>法律风险</strong>：受云厂商所在地法律管辖</li>
+</ol>
+<h3 id="隐私保护">4.2 隐私保护</h3>
+<h4 id="本地部署隐私优势">本地部署隐私优势</h4>
+<ul>
+<li><strong>绝对隐私</strong>：所有数据在本地处理</li>
+<li><strong>无数据收集</strong>：不会上传使用数据</li>
+<li><strong>完全透明</strong>：可以审查所有代码和配置</li>
+<li><strong>自主决定</strong>：自行决定数据保留策略</li>
+</ul>
+<h4 id="云服务器隐私考虑">云服务器隐私考虑</h4>
+<ul>
+<li><strong>信任依赖</strong>：需要信任云厂商的隐私政策</li>
+<li><strong>数据传输</strong>：数据通过网络传输到云端</li>
+<li><strong>日志记录</strong>：云厂商可能记录访问日志</li>
+<li><strong>法律合规</strong>：需要考虑数据存储地的法律法规</li>
+</ul>
+<h3 id="安全建议">4.3 安全建议</h3>
+<h4 id="本地部署安全配置">本地部署安全配置</h4>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. 配置防火墙</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> ufw allow 3000/tcp  <span class="co"># OpenClaw默认端口</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> ufw enable</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. 使用非root用户运行</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="ex">useradd</span> <span class="at">-m</span> openclaw</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> <span class="at">-u</span> openclaw openclaw start</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. 定期更新</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> update <span class="at">-g</span> openclaw</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. 配置备份</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 每天自动备份到外部存储</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="ex">0</span> 2 <span class="pp">*</span> <span class="pp">*</span> <span class="pp">*</span> tar <span class="at">-czf</span> /backup/openclaw-<span class="va">$(</span><span class="fu">date</span> +%Y%m%d<span class="va">)</span>.tar.gz ~/.openclaw</span></code></pre></div>
+<h4 id="云服务器安全配置">云服务器安全配置</h4>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. 配置安全组（仅开放必要端口）</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 端口3000：OpenClaw服务</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 端口22：SSH（建议修改默认端口）</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. 使用密钥登录，禁用密码登录</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh-keygen</span> <span class="at">-t</span> rsa <span class="at">-b</span> 4096</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. 配置fail2ban防止暴力破解</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install fail2ban</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. 配置HTTPS</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="ex">certbot</span> <span class="at">--nginx</span> <span class="at">-d</span> yourdomain.com</span></code></pre></div>
+<hr />
+<h2 id="第五章本地部署详细指南">🖥️ 第五章：本地部署详细指南</h2>
+<h3 id="支持的操作系统">5.1 支持的操作系统</h3>
+<h4 id="完全支持的系统">5.1.1 完全支持的系统</h4>
+<p><strong>Windows系统</strong>： - <strong>Windows
+10/11</strong>（推荐） - 版本：21H2或更高 - 要求：WSL2已启用 -
+内存：至少8GB（推荐16GB+）</p>
+<ul>
+<li><strong>Windows Server</strong>
+<ul>
+<li>版本：2019或2022</li>
+<li>要求：WSL2功能</li>
+<li>适合：企业环境部署</li>
+</ul></li>
+</ul>
+<p><strong>安装WSL2步骤</strong>：</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 以管理员身份运行PowerShell</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>wsl <span class="op">--</span>install</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 重启后继续</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>wsl <span class="op">--</span>set<span class="op">-</span>default<span class="op">-</span>version 2</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 安装Ubuntu</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>wsl <span class="op">--</span>install <span class="op">-</span>d Ubuntu</span></code></pre></div>
+<p><strong>macOS系统</strong>： - <strong>macOS Monterey (12)</strong>
+或更高 - <strong>macOS Ventura (13)</strong>（推荐） - <strong>macOS
+Sonoma (14)</strong> - <strong>芯片支持</strong>：Intel和Apple
+Silicon（M1/M2/M3）</p>
+<p><strong>Linux系统</strong>： - <strong>Ubuntu</strong>：20.04 LTS,
+22.04 LTS（推荐） - <strong>Debian</strong>：11, 12 -
+<strong>CentOS</strong>：7, 8（注意：CentOS 8已停止维护） -
+<strong>Rocky Linux</strong>：8, 9（CentOS替代） -
+<strong>Fedora</strong>：38, 39 - <strong>Arch
+Linux</strong>：最新版本</p>
+<h4 id="有限支持的系统">5.1.2 有限支持的系统</h4>
+<ul>
+<li><strong>ChromeOS</strong>：通过Linux容器（Crostini）</li>
+<li><strong>FreeBSD</strong>：需要手动编译，社区支持有限</li>
+<li><strong>Raspberry Pi OS</strong>：ARM架构，性能有限</li>
+</ul>
+<h4 id="不推荐的系统">5.1.3 不推荐的系统</h4>
+<ul>
+<li><strong>Windows 7/8</strong>：已停止支持，安全风险</li>
+<li><strong>macOS Catalina (10.15)</strong>
+或更早：可能缺少必要依赖</li>
+<li><strong>32位系统</strong>：OpenClaw主要支持64位系统</li>
+</ul>
+<h3 id="本地部署详细步骤">5.2 本地部署详细步骤</h3>
+<h4 id="windows-wsl2部署推荐新手">5.2.1 Windows +
+WSL2部署（推荐新手）</h4>
+<p><strong>步骤1：启用WSL2</strong></p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 管理员PowerShell</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>dism<span class="op">.</span><span class="fu">exe</span> <span class="op">/</span>online <span class="op">/</span>enable<span class="op">-</span>feature <span class="op">/</span>featurename<span class="op">:</span>Microsoft<span class="op">-</span>Windows<span class="op">-</span>Subsystem<span class="op">-</span>Linux <span class="op">/</span>all <span class="op">/</span>norestart</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>dism<span class="op">.</span><span class="fu">exe</span> <span class="op">/</span>online <span class="op">/</span>enable<span class="op">-</span>feature <span class="op">/</span>featurename<span class="op">:</span>VirtualMachinePlatform <span class="op">/</span>all <span class="op">/</span>norestart</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 重启电脑</span></span></code></pre></div>
+<p><strong>步骤2：安装Ubuntu</strong> 1. 打开Microsoft Store 2.
+搜索”Ubuntu” 3. 选择”Ubuntu 22.04 LTS” 4. 安装并启动</p>
+<p><strong>步骤3：配置Ubuntu环境</strong></p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 更新系统</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update <span class="kw">&amp;&amp;</span> <span class="fu">sudo</span> apt upgrade <span class="at">-y</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 安装Node.js</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> https://deb.nodesource.com/setup_22.x <span class="kw">|</span> <span class="fu">sudo</span> <span class="at">-E</span> bash <span class="at">-</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install <span class="at">-y</span> nodejs</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 验证安装</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="ex">node</span> <span class="at">--version</span>  <span class="co"># 应该显示v22.x.x</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> <span class="at">--version</span>   <span class="co"># 应该显示10.x.x</span></span></code></pre></div>
+<p><strong>步骤4：安装OpenClaw</strong></p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 全局安装</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> npm install <span class="at">-g</span> openclaw</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 或者本地安装（推荐）</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> openclaw-project</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> openclaw-project</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> init <span class="at">-y</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install openclaw</span></code></pre></div>
+<p><strong>步骤5：初始化配置</strong></p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 创建配置文件目录</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/.openclaw</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 初始化配置</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="ex">openclaw</span> init</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 编辑配置文件</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="fu">nano</span> ~/.openclaw/config.yaml</span></code></pre></div>
+<p><strong>步骤6：启动服务</strong></p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 开发模式启动</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">openclaw</span> start</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 或者使用PM2持久化运行</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> npm install <span class="at">-g</span> pm2</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="ex">pm2</span> start openclaw <span class="at">--name</span> <span class="st">&quot;openclaw&quot;</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="ex">pm2</span> save</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="ex">pm2</span> startup</span></code></pre></div>
+<h4 id="macos部署">5.2.2 macOS部署</h4>
+<p><strong>步骤1：安装Homebrew</strong></p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">/bin/bash</span> <span class="at">-c</span> <span class="st">&quot;</span><span class="va">$(</span><span class="ex">curl</span> <span class="at">-fsSL</span> https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh<span class="va">)</span><span class="st">&quot;</span></span></code></pre></div>
+<p><strong>步骤2：安装Node.js</strong></p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install node</span></code></pre></div>
+<p><strong>步骤3：安装OpenClaw</strong></p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install <span class="at">-g</span> openclaw</span></code></pre></div>
+<p><strong>步骤4：配置和启动</strong></p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 与Linux步骤相同</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ex">openclaw</span> init</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="ex">openclaw</span> start</span></code></pre></div>
+<h4 id="linux部署以ubuntu为例">5.2.3 Linux部署（以Ubuntu为例）</h4>
+<p><strong>步骤1：系统准备</strong></p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 更新系统</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt upgrade <span class="at">-y</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 安装必要工具</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install <span class="at">-y</span> curl wget git build-essential</span></code></pre></div>
+<p><strong>步骤2：安装Node.js</strong></p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 方法1：使用NodeSource仓库（推荐）</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> https://deb.nodesource.com/setup_22.x <span class="kw">|</span> <span class="fu">sudo</span> <span class="at">-E</span> bash <span class="at">-</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install <span class="at">-y</span> nodejs</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 方法2：使用nvm（多版本管理）</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-o-</span> https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh <span class="kw">|</span> <span class="fu">bash</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/.bashrc</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="ex">nvm</span> install 22</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="ex">nvm</span> use 22</span></code></pre></div>
+<p><strong>步骤3：安装OpenClaw</strong></p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 全局安装</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> npm install <span class="at">-g</span> openclaw</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 或者使用非root用户安装</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install openclaw</span></code></pre></div>
+<p><strong>步骤4：配置系统服务</strong></p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 创建系统服务文件</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nano /etc/systemd/system/openclaw.service</span></code></pre></div>
+<p><strong>服务文件内容</strong>：</p>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode ini"><code class="sourceCode ini"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[Unit]</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="dt">Description</span><span class="ot">=</span><span class="st">OpenClaw AI Assistant</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="dt">After</span><span class="ot">=</span><span class="st">network.target</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="kw">[Service]</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="dt">Type</span><span class="ot">=</span><span class="st">simple</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="dt">User</span><span class="ot">=</span><span class="st">yourusername</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="dt">WorkingDirectory</span><span class="ot">=</span><span class="st">/home/yourusername</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="dt">Environment</span><span class="ot">=</span><span class="st">NODE_ENV=production</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="dt">ExecStart</span><span class="ot">=</span><span class="st">/usr/bin/openclaw start</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="dt">Restart</span><span class="ot">=</span><span class="st">on-failure</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="dt">RestartSec</span><span class="ot">=</span><span class="dv">10</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="kw">[Install]</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="dt">WantedBy</span><span class="ot">=</span><span class="st">multi-user.target</span></span></code></pre></div>
+<p><strong>步骤5：启用服务</strong></p>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl daemon-reload</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable openclaw</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl start openclaw</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl status openclaw</span></code></pre></div>
+<h3 id="本地部署优化建议">5.3 本地部署优化建议</h3>
+<h4 id="性能优化">5.3.1 性能优化</h4>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 调整Node.js内存限制</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NODE_OPTIONS</span><span class="op">=</span><span class="st">&quot;--max-old-space-size=4096&quot;</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 使用PM2集群模式（多核CPU）</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="ex">pm2</span> start openclaw <span class="at">-i</span> max <span class="at">--name</span> <span class="st">&quot;openclaw-cluster&quot;</span></span></code></pre></div>
+<h4 id="网络优化">5.3.2 网络优化</h4>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 配置静态IP（避免IP变化）</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 编辑网络配置</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nano /etc/netplan/01-netcfg.yaml</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">network</span><span class="kw">:</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">version</span><span class="kw">:</span><span class="at"> </span><span class="dv">2</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">ethernets</span><span class="kw">:</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">eth0</span><span class="kw">:</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">dhcp4</span><span class="kw">:</span><span class="at"> </span><span class="ch">no</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">addresses</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">192.168.1.100/</span><span class="dv">24</span><span class="kw">]</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">gateway4</span><span class="kw">:</span><span class="at"> </span><span class="fl">192.168.1.1</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">nameservers</span><span class="kw">:</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">addresses</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="fl">8.8.8.8</span><span class="kw">,</span><span class="at"> </span><span class="fl">8.8.4.4</span><span class="kw">]</span></span></code></pre></div>
+<h4 id="安全优化">5.3.3 安全优化</h4>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. 配置防火墙</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> ufw default deny incoming</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> ufw default allow outgoing</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> ufw allow 3000/tcp  <span class="co"># OpenClaw端口</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> ufw allow 22/tcp    <span class="co"># SSH（建议修改端口）</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> ufw enable</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. 使用非root用户运行</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> useradd <span class="at">-m</span> <span class="at">-s</span> /bin/bash openclaw</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> passwd openclaw</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> usermod <span class="at">-aG</span> sudo openclaw</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. 配置SSH密钥登录</span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh-keygen</span> <span class="at">-t</span> rsa <span class="at">-b</span> 4096 <span class="at">-C</span> <span class="st">&quot;openclaw@yourhost&quot;</span></span></code></pre></div>
+<h4 id="监控和日志">5.3.4 监控和日志</h4>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 配置日志轮转</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nano /etc/logrotate.d/openclaw</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 内容：</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="ex">/home/openclaw/.openclaw/logs/*.log</span> {</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    <span class="ex">daily</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    <span class="ex">missingok</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    <span class="ex">rotate</span> 7</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="ex">compress</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    <span class="ex">delaycompress</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    <span class="ex">notifempty</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>    <span class="ex">create</span> 0640 openclaw openclaw</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a><span class="er">}</span></span></code></pre></div>
+<h3 id="公网访问配置本地部署">5.4 公网访问配置（本地部署）</h3>
+<h4 id="内网穿透方案">5.4.1 内网穿透方案</h4>
+<p><strong>方案一：使用frp（推荐）</strong></p>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 服务器端（云服务器）</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://github.com/fatedier/frp/releases/download/v0.51.3/frp_0.51.3_linux_amd64.tar.gz</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-zxvf</span> frp_0.51.3_linux_amd64.tar.gz</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> frp_0.51.3_linux_amd64</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 编辑服务器配置</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="fu">nano</span> frps.ini</span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode ini"><code class="sourceCode ini"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[common]</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="dt">bind_port </span><span class="ot">=</span><span class="st"> </span><span class="dv">7000</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="dt">vhost_http_port </span><span class="ot">=</span><span class="st"> </span><span class="dv">8080</span></span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 客户端（本地电脑）</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 编辑客户端配置</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">nano</span> frpc.ini</span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode ini"><code class="sourceCode ini"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[common]</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="dt">server_addr </span><span class="ot">=</span><span class="st"> your-server-ip</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="dt">server_port </span><span class="ot">=</span><span class="st"> </span><span class="dv">7000</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="kw">[openclaw]</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="dt">type </span><span class="ot">=</span><span class="st"> http</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="dt">local_port </span><span class="ot">=</span><span class="st"> </span><span class="dv">3000</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="dt">custom_domains </span><span class="ot">=</span><span class="st"> openclaw.yourdomain.com</span></span></code></pre></div>
+<p><strong>方案二：使用ngrok（简单）</strong></p>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 安装ngrok</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> https://ngrok-agent.s3.amazonaws.com/ngrok.asc <span class="kw">|</span> <span class="fu">sudo</span> tee /etc/apt/trusted.gpg.d/ngrok.asc <span class="op">&gt;</span>/dev/null</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;deb https://ngrok-agent.s3.amazonaws.com buster main&quot;</span> <span class="kw">|</span> <span class="fu">sudo</span> tee /etc/apt/sources.list.d/ngrok.list</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install ngrok</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 配置authtoken</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="ex">ngrok</span> config add-authtoken your_token</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 启动隧道</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="ex">ngrok</span> http 3000</span></code></pre></div>
+<p><strong>方案三：使用Cloudflare Tunnel（免费）</strong></p>
+<div class="sourceCode" id="cb31"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 安装cloudflared</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-L</span> <span class="at">--output</span> cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> dpkg <span class="at">-i</span> cloudflared.deb</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 登录</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="ex">cloudflared</span> tunnel login</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 创建隧道</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="ex">cloudflared</span> tunnel create openclaw-tunnel</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 配置路由</span></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a><span class="ex">cloudflared</span> tunnel route dns openclaw-tunnel openclaw.yourdomain.com</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 启动隧道</span></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a><span class="ex">cloudflared</span> tunnel run openclaw-tunnel</span></code></pre></div>
+<h4 id="域名和ssl配置">5.4.2 域名和SSL配置</h4>
+<div class="sourceCode" id="cb32"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 使用Let&#39;s Encrypt获取免费SSL证书</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install certbot python3-certbot-nginx</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 获取证书</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> certbot certonly <span class="at">--standalone</span> <span class="at">-d</span> openclaw.yourdomain.com</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 自动续期</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> certbot renew <span class="at">--dry-run</span></span></code></pre></div>
+<hr />
+<h2 id="第六章云服务器部署要点">☁️ 第六章：云服务器部署要点</h2>
+<h3 id="云服务器选择指南">6.1 云服务器选择指南</h3>
+<h4 id="配置推荐">6.1.1 配置推荐</h4>
+<table>
+<thead>
+<tr class="header">
+<th>使用场景</th>
+<th>CPU</th>
+<th>内存</th>
+<th>存储</th>
+<th>带宽</th>
+<th>月价格</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>个人测试</strong></td>
+<td>1核</td>
+<td>2GB</td>
+<td>40GB</td>
+<td>2M</td>
+<td>40-60元</td>
+</tr>
+<tr class="even">
+<td><strong>日常使用</strong></td>
+<td>2核</td>
+<td>4GB</td>
+<td>80GB</td>
+<td>5M</td>
+<td>80-100元</td>
+</tr>
+<tr class="odd">
+<td><strong>团队使用</strong></td>
+<td>4核</td>
+<td>8GB</td>
+<td>200GB</td>
+<td>10M</td>
+<td>200-300元</td>
+</tr>
+<tr class="even">
+<td><strong>企业生产</strong></td>
+<td>8核</td>
+<td>16GB</td>
+<td>500GB</td>
+<td>20M</td>
+<td>500-800元</td>
+</tr>
+</tbody>
+</table>
+<h4 id="地域选择">6.1.2 地域选择</h4>
+<ul>
+<li><strong>国内用户</strong>：选择离你最近的地域
+<ul>
+<li>华北：北京、天津</li>
+<li>华东：上海、杭州</li>
+<li>华南：广州、深圳</li>
+<li>西南：成都、重庆</li>
+</ul></li>
+<li><strong>国际用户</strong>：
+<ul>
+<li>亚洲：新加坡、东京</li>
+<li>欧洲：法兰克福、伦敦</li>
+<li>北美：硅谷、弗吉尼亚</li>
+</ul></li>
+</ul>
+<h4 id="操作系统选择">6.1.3 操作系统选择</h4>
+<ul>
+<li><strong>新手推荐</strong>：Ubuntu 22.04 LTS</li>
+<li><strong>企业推荐</strong>：CentOS 7/8 或 Rocky Linux</li>
+<li><strong>性能要求高</strong>：Debian 11/12</li>
+<li><strong>特定需求</strong>：根据应用需求选择</li>
+</ul>
+<h3 id="云服务器安全配置-1">6.2 云服务器安全配置</h3>
+<h4 id="基础安全">6.2.1 基础安全</h4>
+<div class="sourceCode" id="cb33"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. 更新系统</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update <span class="kw">&amp;&amp;</span> <span class="fu">sudo</span> apt upgrade <span class="at">-y</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. 修改SSH端口</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nano /etc/ssh/sshd_config</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 修改：Port 2222（或其他非22端口）</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. 禁用root SSH登录</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 修改：PermitRootLogin no</span></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. 重启SSH服务</span></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl restart sshd</span></code></pre></div>
+<h4 id="防火墙配置">6.2.2 防火墙配置</h4>
+<div class="sourceCode" id="cb34"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 安装ufw</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install ufw</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 配置规则</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> ufw default deny incoming</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> ufw default allow outgoing</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> ufw allow 2222/tcp  <span class="co"># SSH新端口</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> ufw allow 3000/tcp  <span class="co"># OpenClaw端口</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> ufw allow 80/tcp    <span class="co"># HTTP（如果需要）</span></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> ufw allow 443/tcp   <span class="co"># HTTPS</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 启用防火墙</span></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> ufw enable</span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> ufw status verbose</span></code></pre></div>
+<h4 id="安全组配置云控制台">6.2.3 安全组配置（云控制台）</h4>
+<ol type="1">
+<li>登录云控制台</li>
+<li>进入安全组管理</li>
+<li>添加入站规则：
+<ul>
+<li>端口：3000，协议：TCP，来源：0.0.0.0/0</li>
+<li>端口：2222，协议：TCP，来源：你的IP（限制访问）</li>
+</ul></li>
+<li>删除默认的全开放规则</li>
+</ol>
+<h3 id="性能优化配置">6.3 性能优化配置</h3>
+<h4 id="系统优化">6.3.1 系统优化</h4>
+<div class="sourceCode" id="cb35"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 调整系统参数</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nano /etc/sysctl.conf</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 添加以下内容</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="ex">net.core.somaxconn</span> = 1024</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="ex">net.ipv4.tcp_max_syn_backlog</span> = 1024</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="ex">net.ipv4.tcp_syncookies</span> = 1</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="ex">net.ipv4.tcp_tw_reuse</span> = 1</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a><span class="ex">net.ipv4.tcp_fin_timeout</span> = 30</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 生效配置</span></span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> sysctl <span class="at">-p</span></span></code></pre></div>
+<h4 id="node.js优化">6.3.2 Node.js优化</h4>
+<div class="sourceCode" id="cb36"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 创建OpenClaw启动脚本</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nano /opt/openclaw/start.sh</span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NODE_ENV</span><span class="op">=</span>production</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NODE_OPTIONS</span><span class="op">=</span><span class="st">&quot;--max-old-space-size=4096&quot;</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">UV_THREADPOOL_SIZE</span><span class="op">=</span>16</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /opt/openclaw</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="ex">/usr/bin/node</span> /usr/local/bin/openclaw start</span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 设置权限</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x /opt/openclaw/start.sh</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 使用PM2管理</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> npm install <span class="at">-g</span> pm2</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="ex">pm2</span> start /opt/openclaw/start.sh <span class="at">--name</span> openclaw</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="ex">pm2</span> save</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a><span class="ex">pm2</span> startup</span></code></pre></div>
+<h4 id="监控配置">6.3.3 监控配置</h4>
+<div class="sourceCode" id="cb39"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 安装监控工具</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install htop nmon iftop</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 使用PM2监控</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="ex">pm2</span> monit</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 配置日志</span></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a><span class="ex">pm2</span> logs openclaw <span class="at">--lines</span> 100</span></code></pre></div>
+<hr />
+<h2 id="第七章选择建议与决策指南">🎯 第七章：选择建议与决策指南</h2>
+<h3 id="根据使用场景选择">7.1 根据使用场景选择</h3>
+<h4 id="场景一个人学习与测试">场景一：个人学习与测试</h4>
+<p><strong>推荐</strong>：本地电脑部署 <strong>理由</strong>： 1.
+零成本（利用现有设备） 2. 调试方便 3. 无需公网访问 4. 学习过程更直观</p>
+<p><strong>配置建议</strong>： - 使用Windows + WSL2或macOS -
+从基础功能开始学习 - 逐步尝试高级功能</p>
+<h4 id="场景二团队协作使用">场景二：团队协作使用</h4>
+<p><strong>推荐</strong>：云服务器部署 <strong>理由</strong>： 1.
+24小时在线，团队成员随时访问 2. 统一管理，配置一致 3. 数据集中，便于备份
+4. 性能稳定，不受个人设备影响</p>
+<p><strong>配置建议</strong>： - 选择2核4G以上配置 - 配置域名和SSL证书 -
+设置访问权限控制 - 配置定期备份</p>
+<h4 id="场景三企业生产环境">场景三：企业生产环境</h4>
+<p><strong>推荐</strong>：混合部署或专业云服务 <strong>理由</strong>：
+1. 高可用性要求 2. 数据安全和合规要求 3. 性能需求较高 4.
+需要专业支持</p>
+<p><strong>配置建议</strong>： - 考虑容器化部署（Docker） -
+配置负载均衡和高可用 - 实施严格的安全策略 - 建立监控和告警系统</p>
+<h3 id="根据技术能力选择">7.2 根据技术能力选择</h3>
+<h4 id="新手用户无linux经验">新手用户（无Linux经验）</h4>
+<p><strong>推荐</strong>：Windows本地部署 或 腾讯云轻量服务器
+<strong>理由</strong>： 1. 图形界面操作友好 2. 错误提示更直观 3.
+社区资源丰富 4. 调试相对简单</p>
+<p><strong>学习路径</strong>： 1. Windows + WSL2部署 2.
+掌握基础Linux命令 3. 尝试云服务器部署 4. 学习高级配置</p>
+<h4 id="中级用户有基础linux经验">中级用户（有基础Linux经验）</h4>
+<p><strong>推荐</strong>：云服务器部署 <strong>理由</strong>： 1.
+可以处理常见Linux问题 2. 能够配置基础服务 3. 需要公网访问能力 4.
+希望学习服务器管理</p>
+<p><strong>技能提升</strong>： 1. 学习服务管理（systemd） 2.
+掌握网络配置 3. 学习安全配置 4. 尝试自动化部署</p>
+<h4 id="高级用户有运维经验">高级用户（有运维经验）</h4>
+<p><strong>推荐</strong>：根据实际需求选择 <strong>理由</strong>： 1.
+能够处理复杂问题 2. 需要定制化配置 3. 考虑性能和成本平衡 4.
+可能需要混合架构</p>
+<p><strong>进阶方向</strong>： 1. 容器化部署（Docker/K8s） 2.
+自动化运维（Ansible/Terraform） 3. 监控和告警系统 4. 高可用架构设计</p>
+<h3 id="根据预算选择">7.3 根据预算选择</h3>
+<h4 id="预算有限1000元年">预算有限（&lt;1000元/年）</h4>
+<p><strong>推荐</strong>：本地旧设备 或 最低配置云服务器
+<strong>策略</strong>： 1. 优先利用现有设备 2. 选择最经济的云套餐 3.
+关注云厂商优惠活动 4. 考虑按量计费（使用频率低时）</p>
+<h4 id="中等预算1000-3000元年">中等预算（1000-3000元/年）</h4>
+<p><strong>推荐</strong>：中等配置云服务器 或 经济型新设备
+<strong>策略</strong>： 1. 平衡性能和成本 2. 考虑3年长期合约优惠 3.
+预留扩展空间 4. 配置基础监控和备份</p>
+<h4 id="充足预算3000元年">充足预算（&gt;3000元/年）</h4>
+<p><strong>推荐</strong>：高性能本地设备 + 云服务器备份
+<strong>策略</strong>： 1. 本地部署为主，云服务器为备份 2.
+配置高可用架构 3. 实施完整的安全策略 4. 建立专业监控系统</p>
+<h3 id="迁移策略建议">7.4 迁移策略建议</h3>
+<h4 id="从本地迁移到云">从本地迁移到云</h4>
+<p><strong>时机</strong>： 1. 需要24小时在线服务时 2. 团队成员增加时 3.
+需要公网访问时 4. 本地设备性能不足时</p>
+<p><strong>步骤</strong>： 1. 在云服务器部署测试环境 2. 迁移配置和数据
+3. 测试功能完整性 4. 切换DNS或访问方式 5. 保留本地备份</p>
+<h4 id="从云迁移到本地">从云迁移到本地</h4>
+<p><strong>时机</strong>： 1. 成本控制需求强烈时 2. 数据隐私要求提高时
+3. 网络延迟影响体验时 4. 拥有高性能本地设备时</p>
+<p><strong>步骤</strong>： 1. 在本地环境部署测试 2. 同步云服务器数据 3.
+配置内网穿透（如需公网访问） 4. 测试切换 5. 逐步减少云服务器使用</p>
+<hr />
+<h2 id="第八章未来扩展建议">📈 第八章：未来扩展建议</h2>
+<h3 id="性能扩展方案">8.1 性能扩展方案</h3>
+<h4 id="垂直扩展升级配置">垂直扩展（升级配置）</h4>
+<p><strong>本地部署</strong>： 1. 升级内存（最有效） 2. 更换更快的SSD 3.
+升级CPU（笔记本限制较大） 4. 优化散热系统</p>
+<p><strong>云服务器</strong>： 1. 升级CPU和内存配置 2.
+增加存储容量和性能 3. 提升网络带宽 4. 使用更高性能的实例类型</p>
+<h4 id="水平扩展增加节点">水平扩展（增加节点）</h4>
+<p><strong>方案一：负载均衡</strong></p>
+<pre class="nginx"><code># Nginx配置示例
+upstream openclaw_servers {
+    server 192.168.1.100:3000;
+    server 192.168.1.101:3000;
+    server 192.168.1.102:3000;
+}
+
+server {
+    listen 80;
+    server_name openclaw.yourdomain.com;
+    
+    location / {
+        proxy_pass http://openclaw_servers;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}</code></pre>
+<p><strong>方案二：容器化部署</strong></p>
+<div class="sourceCode" id="cb41"><pre
+class="sourceCode dockerfile"><code class="sourceCode dockerfile"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dockerfile示例</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> node:22-alpine</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="kw">WORKDIR</span> /app</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="kw">COPY</span> package*.json ./</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="kw">RUN</span> <span class="ex">npm</span> ci <span class="at">--only</span><span class="op">=</span>production</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="kw">COPY</span> . .</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="kw">EXPOSE</span> 3000</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="kw">CMD</span> [<span class="st">&quot;node&quot;</span>, <span class="st">&quot;openclaw&quot;</span>, <span class="st">&quot;start&quot;</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb42"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># docker-compose.yml</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">version</span><span class="kw">:</span><span class="at"> </span><span class="st">&#39;3.8&#39;</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">services</span><span class="kw">:</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">openclaw</span><span class="kw">:</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">build</span><span class="kw">:</span><span class="at"> .</span></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">&quot;3000:3000&quot;</span></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> ./data:/app/data</span></span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> NODE_ENV=production</span></span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> unless-stopped</span></span></code></pre></div>
+<h3 id="功能扩展建议">8.2 功能扩展建议</h3>
+<h4 id="集成更多平台">集成更多平台</h4>
+<ol type="1">
+<li><strong>微信集成</strong>：通过企业微信或第三方方案</li>
+<li><strong>钉钉集成</strong>：适合国内企业环境</li>
+<li><strong>Slack集成</strong>：适合国际团队</li>
+<li><strong>自定义Webhook</strong>：集成内部系统</li>
+</ol>
+<h4 id="开发自定义技能">开发自定义技能</h4>
+<ol type="1">
+<li><strong>业务特定技能</strong>：根据工作需求开发</li>
+<li><strong>数据集成技能</strong>：连接内部数据库</li>
+<li><strong>自动化技能</strong>：业务流程自动化</li>
+<li><strong>分析技能</strong>：数据分析和报告</li>
+</ol>
+<h4 id="优化用户体验">优化用户体验</h4>
+<ol type="1">
+<li><strong>移动端优化</strong>：响应式界面</li>
+<li><strong>语音交互</strong>：语音输入和输出</li>
+<li><strong>多语言支持</strong>：国际化需求</li>
+<li><strong>个性化配置</strong>：用户偏好设置</li>
+</ol>
+<h3 id="监控和维护体系">8.3 监控和维护体系</h3>
+<h4 id="监控指标">监控指标</h4>
+<div class="sourceCode" id="cb43"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">系统监控</span><span class="kw">:</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">CPU使用率</span><span class="kw">:</span><span class="at"> &lt;80%</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">内存使用率</span><span class="kw">:</span><span class="at"> &lt;85%</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">磁盘空间</span><span class="kw">:</span><span class="at"> &gt;20%空闲</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">网络流量</span><span class="kw">:</span><span class="at"> 正常范围</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a><span class="fu">服务监控</span><span class="kw">:</span></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">响应时间</span><span class="kw">:</span><span class="at"> &lt;500ms</span></span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">错误率</span><span class="kw">:</span><span class="at"> &lt;1%</span></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">可用性</span><span class="kw">:</span><span class="at"> &gt;99.5%</span></span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">并发连接数</span><span class="kw">:</span><span class="at"> 监控趋势</span></span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a><span class="fu">业务监控</span><span class="kw">:</span></span>
+<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> 用户活跃度</span></span>
+<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> 功能使用频率</span></span>
+<span id="cb43-16"><a href="#cb43-16" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> 任务完成率</span></span>
+<span id="cb43-17"><a href="#cb43-17" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> 用户满意度</span></span></code></pre></div>
+<h4 id="告警配置">告警配置</h4>
+<div class="sourceCode" id="cb44"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 使用Prometheus + Grafana</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 或云厂商的监控服务</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 关键告警项：</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="ex">1.</span> 服务不可用</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="ex">2.</span> 响应时间超时</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a><span class="ex">3.</span> 错误率升高</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a><span class="ex">4.</span> 资源使用率过高</span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a><span class="ex">5.</span> 安全事件</span></code></pre></div>
+<h4 id="维护计划">维护计划</h4>
+<div class="sourceCode" id="cb45"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">日常维护</span><span class="kw">:</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">日志检查</span><span class="kw">:</span><span class="at"> 每天</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">备份验证</span><span class="kw">:</span><span class="at"> 每周</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">性能检查</span><span class="kw">:</span><span class="at"> 每周</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="fu">定期维护</span><span class="kw">:</span></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">系统更新</span><span class="kw">:</span><span class="at"> 每月</span></span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">安全扫描</span><span class="kw">:</span><span class="at"> 每月</span></span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">配置审核</span><span class="kw">:</span><span class="at"> 每季度</span></span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a><span class="fu">年度维护</span><span class="kw">:</span></span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">架构评审</span><span class="kw">:</span><span class="at"> 每年</span></span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">灾难恢复测试</span><span class="kw">:</span><span class="at"> 每年</span></span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">容量规划</span><span class="kw">:</span><span class="at"> 每年</span></span></code></pre></div>
+<hr />
+<h2 id="总结与最终建议">🎯 总结与最终建议</h2>
+<h3 id="核心结论">9.1 核心结论</h3>
+<ol type="1">
+<li><strong>成本角度</strong>：
+<ul>
+<li>短期使用（&lt;2年）：云服务器更经济</li>
+<li>长期使用（&gt;3年）：本地部署更划算</li>
+<li>高性能需求：本地专业设备优势明显</li>
+</ul></li>
+<li><strong>技术难度</strong>：
+<ul>
+<li>新手：Windows本地部署最简单</li>
+<li>有经验：云服务器部署更灵活</li>
+<li>专家：可根据需求混合部署</li>
+</ul></li>
+<li><strong>使用体验</strong>：
+<ul>
+<li>个人使用：本地部署响应更快</li>
+<li>团队使用：云服务器更方便协作</li>
+<li>企业使用：需要专业云服务或混合架构</li>
+</ul></li>
+</ol>
+<h3 id="给韩立的个性化建议">9.2 给韩立的个性化建议</h3>
+<p>基于你的使用情况，我建议：</p>
+<h4 id="当前阶段学习探索期">当前阶段（学习探索期）</h4>
+<p><strong>推荐方案</strong>：Windows本地部署 + WSL2
+<strong>理由</strong>： 1. 零额外成本（使用现有电脑） 2.
+调试方便，学习曲线平缓 3. 可以随时暂停和恢复 4. 适合尝试各种功能</p>
+<p><strong>具体配置</strong>： - 系统：Windows 11 + WSL2 (Ubuntu 22.04)
+- 内存：确保至少8GB可用 - 存储：SSD硬盘，至少20GB空闲空间 -
+网络：家庭宽带即可</p>
+<h4 id="下一阶段日常使用期">下一阶段（日常使用期）</h4>
+<p><strong>考虑方案</strong>：腾讯云轻量服务器 <strong>时机</strong>：
+1. 需要24小时在线服务时 2. 希望从外部访问时 3. 准备与团队分享时</p>
+<p><strong>配置建议</strong>： - 套餐：2核4G 6M带宽（约80元/月） -
+系统：Ubuntu 22.04 LTS - 地域：选择离你最近的地域</p>
+<h4 id="长期规划专业使用期">长期规划（专业使用期）</h4>
+<p><strong>混合方案</strong>：本地主力 + 云备份 <strong>架构</strong>：
+- 主力：高性能本地设备（如联想小新Pro） -
+备份：低成本云服务器（同步配置） - 访问：通过内网穿透实现公网访问</p>
+<h3 id="实施路线图">9.3 实施路线图</h3>
+<h4
+id="第一阶段第1个月本地部署学习">第一阶段（第1个月）：本地部署学习</h4>
+<ol type="1">
+<li><strong>第1周</strong>：完成Windows + WSL2环境搭建</li>
+<li><strong>第2周</strong>：安装和配置OpenClaw基础功能</li>
+<li><strong>第3周</strong>：尝试记忆系统、技能安装</li>
+<li><strong>第4周</strong>：配置自动化任务和提醒</li>
+</ol>
+<h4 id="第二阶段第2-3个月功能深入">第二阶段（第2-3个月）：功能深入</h4>
+<ol type="1">
+<li><strong>第5-6周</strong>：集成飞书或企业微信</li>
+<li><strong>第7-8周</strong>：开发或定制实用技能</li>
+<li><strong>第9-10周</strong>：优化配置和性能</li>
+<li><strong>第11-12周</strong>：建立完整的工作流程</li>
+</ol>
+<h4
+id="第三阶段第4个月及以后扩展优化">第三阶段（第4个月及以后）：扩展优化</h4>
+<ol type="1">
+<li><strong>考虑云服务器部署</strong></li>
+<li><strong>配置公网访问</strong></li>
+<li><strong>建立监控和维护体系</strong></li>
+<li><strong>根据实际需求持续优化</strong></li>
+</ol>
+<h3 id="风险与应对">9.4 风险与应对</h3>
+<h4 id="本地部署风险">本地部署风险</h4>
+<ol type="1">
+<li><strong>硬件故障</strong>：定期备份重要数据</li>
+<li><strong>数据丢失</strong>：配置自动备份到云存储</li>
+<li><strong>服务中断</strong>：考虑备用设备或云备份</li>
+<li><strong>安全风险</strong>：加强防火墙和安全配置</li>
+</ol>
+<h4 id="云服务器风险">云服务器风险</h4>
+<ol type="1">
+<li><strong>成本超支</strong>：设置预算告警，监控使用量</li>
+<li><strong>供应商锁定</strong>：保持配置可移植性</li>
+<li><strong>安全漏洞</strong>：定期安全扫描和更新</li>
+<li><strong>网络问题</strong>：选择多个地域备份</li>
+</ol>
+<h3 id="最后的建议">9.5 最后的建议</h3>
+<ol type="1">
+<li><strong>从简单开始</strong>：不要一开始就追求完美部署</li>
+<li><strong>逐步深入</strong>：随着使用深入，逐步优化配置</li>
+<li><strong>保持灵活</strong>：根据实际需求调整部署方案</li>
+<li><strong>重视备份</strong>：无论哪种方案，都要有备份策略</li>
+<li><strong>参与社区</strong>：遇到问题时，社区是很好的资源</li>
+</ol>
+<p><strong>记住</strong>：最好的部署方案不是最贵的，也不是最先进的，而是最适合你当前需求和能力的方案。</p>
+<hr />
+<h2 id="附录实用命令速查">📚 附录：实用命令速查</h2>
+<h3 id="本地部署常用命令">本地部署常用命令</h3>
+<div class="sourceCode" id="cb46"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># WSL2管理</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="ex">wsl</span> <span class="at">--list</span> <span class="at">--verbose</span>      <span class="co"># 查看WSL状态</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="ex">wsl</span> <span class="at">--shutdown</span>           <span class="co"># 关闭WSL</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="ex">wsl</span> <span class="at">-d</span> Ubuntu            <span class="co"># 启动Ubuntu</span></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="co"># OpenClaw基础</span></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a><span class="ex">openclaw</span> <span class="at">--version</span>       <span class="co"># 查看版本</span></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a><span class="ex">openclaw</span> init            <span class="co"># 初始化配置</span></span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a><span class="ex">openclaw</span> start           <span class="co"># 启动服务</span></span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a><span class="ex">openclaw</span> status          <span class="co"># 查看状态</span></span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 进程管理</span></span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a><span class="ex">pm2</span> start openclaw       <span class="co"># 使用PM2启动</span></span>
+<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a><span class="ex">pm2</span> logs openclaw        <span class="co"># 查看日志</span></span>
+<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a><span class="ex">pm2</span> monit                <span class="co"># 监控进程</span></span></code></pre></div>
+<h3 id="云服务器常用命令">云服务器常用命令</h3>
+<div class="sourceCode" id="cb47"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 连接服务器</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> <span class="at">-p</span> 2222 user@server-ip</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 系统监控</span></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a><span class="ex">htop</span>                     <span class="co"># 实时系统监控</span></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a><span class="fu">df</span> <span class="at">-h</span>                    <span class="co"># 磁盘使用情况</span></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a><span class="fu">free</span> <span class="at">-h</span>                  <span class="co"># 内存使用情况</span></span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a><span class="fu">netstat</span> <span class="at">-tlnp</span>            <span class="co"># 端口监听情况</span></span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 服务管理</span></span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl status openclaw</span>
+<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> journalctl <span class="at">-u</span> openclaw <span class="at">-f</span></span>
+<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl restart openclaw</span></code></pre></div>
+<h3 id="故障排查命令">故障排查命令</h3>
+<div class="sourceCode" id="cb48"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 检查服务状态</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> http://localhost:3000/health</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="fu">netstat</span> <span class="at">-an</span> <span class="kw">|</span> <span class="fu">grep</span> 3000</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 查看日志</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span> <span class="at">-f</span> ~/.openclaw/logs/error.log</span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a><span class="ex">journalctl</span> <span class="at">-u</span> openclaw <span class="at">--since</span> <span class="st">&quot;1 hour ago&quot;</span></span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 性能分析</span></span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a><span class="ex">top</span> <span class="at">-p</span> <span class="va">$(</span><span class="ex">pgrep</span> <span class="at">-f</span> openclaw<span class="va">)</span></span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a><span class="ex">node</span> <span class="at">--prof-process</span> isolate-<span class="pp">*</span>.log <span class="op">&gt;</span> profile.txt</span></code></pre></div>
+<hr />
+<p><strong>文档版本</strong>：v1.0<br />
+<strong>最后更新</strong>：2026年3月2日<br />
+<strong>作者</strong>：韩立的AI同事<br />
+<strong>适用对象</strong>：OpenClaw用户、技术决策者、系统管理员</p>
+<blockquote>
+<p><strong>提示</strong>：本文基于实际部署经验编写，技术细节可能随时间变化，请参考最新官方文档。</p>
+</blockquote>
